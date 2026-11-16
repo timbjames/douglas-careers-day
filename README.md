@@ -57,7 +57,21 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 | Route | Purpose |
 |---|---|
 | `/` | Home: enter the raffle or play the game |
-| `/raffle` | Raffle entry *(coming soon)* |
+| `/raffle` | Raffle entry: first name + optional initial → 4-digit ticket number |
 | `/game` | Bug Squash *(coming soon)* |
 | `/screen` | Big-screen display *(coming soon)* |
-| `/admin` | PIN-protected prize draw *(coming soon)* |
+| `/admin` | PIN-protected admin: prizes, animated draw, entries, end-of-day wipe |
+
+## Running the raffle on the day
+
+1. Open `/admin` on your laptop and unlock it with `ADMIN_PIN`.
+2. **Prizes** tab: add each prize and how many you have.
+3. Visitors enter at `/raffle` on a tablet or their phones. They get a ticket number and photograph it.
+4. At the end of the day, open the **Draw** tab, pick a prize and press **Draw a winner**.
+   - If the winner has gone home, press **Not here? Redraw**. Their ticket is marked as forfeited and can't be drawn again.
+5. When everything has been handed out, go to **Entries**, type `WIPE` and wipe all entries.
+
+Safeguards:
+- Only a first name and an optional surname initial are stored, and names are checked against a small blocklist.
+- Each IP address can make at most 20 entries a minute.
+- After 5 wrong admin PINs, that IP address is locked out for a minute.

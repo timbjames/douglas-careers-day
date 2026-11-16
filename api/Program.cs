@@ -1,4 +1,7 @@
+using System.Threading.RateLimiting;
 using CareersDay.Api.Data;
+using CareersDay.Api.Raffle;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +11,31 @@ var connectionString = builder.Configuration.GetConnectionString("Default")
 
 builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql(connectionString));
 
+// nginx sits in front of the API, so trust X-Forwarded-For to get each visitor's real IP
+// (used for rate limiting and the admin PIN lockout).
+builder.Services.Configure<ForwardedHeadersOptions>(o =>
+{
+    o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    o.KnownIPNetworks.Clear();
+    o.KnownProxies.Clear();
+});
+
+// Stop one person entering the raffle hundreds of times. Generous enough for a shared kiosk tablet.
+builder.Services.AddRateLimiter(o =>
+{
+    o.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    o.OnRejected = (ctx, ct) => new ValueTask(ctx.HttpContext.Response.WriteAsJsonAsync(
+        new { error = "Whoa, slow down! Please wait a minute and try again." }, ct));
+    o.AddPolicy(RaffleEndpoints.EntryRateLimitPolicy, http =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions { PermitLimit = 20, Window = TimeSpan.FromMinutes(1) }));
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
+app.UseRateLimiter();
 
 await MigrateWithRetryAsync(app);
 
@@ -21,6 +48,8 @@ api.MapGet("/health", async (AppDbContext db, CancellationToken ct) =>
     var body = new { status = dbOk ? "ok" : "degraded", database = dbOk, time = DateTimeOffset.UtcNow };
     return dbOk ? Results.Ok(body) : Results.Json(body, statusCode: StatusCodes.Status503ServiceUnavailable);
 });
+
+app.MapRaffleEndpoints();
 
 app.Run();
 
