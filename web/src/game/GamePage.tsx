@@ -158,10 +158,19 @@ interface GameOverProps {
   onPlayAgain: () => void
 }
 
+/** How long Play again / Home stay locked after the round ends, so leftover taps can't hit them. */
+const END_LOCK_MS = 1500
+
 function GameOver({ stats, submitted, onSubmitted, onPlayAgain }: GameOverProps) {
   const [nickname, setNickname] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [unlocked, setUnlocked] = useState(false)
+
+  useEffect(() => {
+    const id = setTimeout(() => setUnlocked(true), END_LOCK_MS)
+    return () => clearTimeout(id)
+  }, [])
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
@@ -180,50 +189,64 @@ function GameOver({ stats, submitted, onSubmitted, onPlayAgain }: GameOverProps)
   }
 
   return (
-    <div className="card game__card">
-      <h1>⏰ Time's up!</h1>
-      <p className="game__final">{stats.score}</p>
-      <p className="muted">
-        {stats.squashed} bugs squashed · best combo {stats.bestCombo}
-        {stats.features > 0 && ` · ${stats.features} feature${stats.features === 1 ? '' : 's'} squashed 😬`}
-      </p>
-
-      {submitted ? (
-        <p className="game__rank">
-          {submitted.rank === 1 ? '👑 New high score! ' : ''}
-          You're <strong>#{submitted.rank}</strong> on the leaderboard!
+    <>
+      <div className="card game__card">
+        <h1>⏰ Time's up!</h1>
+        <p className="game__final">{stats.score}</p>
+        <p className="muted">
+          {stats.squashed} bugs squashed · best combo {stats.bestCombo}
+          {stats.features > 0 && ` · ${stats.features} feature${stats.features === 1 ? '' : 's'} squashed 😬`}
         </p>
-      ) : (
-        <form className="inline-form" onSubmit={submit}>
-          <input
-            placeholder="Nickname for the leaderboard"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            maxLength={16}
-            autoComplete="off"
-            autoFocus
-            aria-label="Nickname"
-          />
-          <button className="btn btn--primary" disabled={busy || nickname.trim() === ''}>
-            Save score
-          </button>
-        </form>
-      )}
 
-      {error && (
-        <p className="error" role="alert">
-          {error}
-        </p>
-      )}
+        {submitted ? (
+          <p className="game__rank">
+            {submitted.rank === 1 ? '👑 New high score! ' : ''}
+            You're <strong>#{submitted.rank}</strong> on the leaderboard!
+          </p>
+        ) : (
+          <form className="inline-form" onSubmit={submit}>
+            <input
+              placeholder="Nickname for the leaderboard"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              maxLength={16}
+              autoComplete="off"
+              autoFocus
+              aria-label="Nickname"
+            />
+            <button className="btn btn--primary" disabled={busy || nickname.trim() === ''}>
+              Save score
+            </button>
+          </form>
+        )}
 
-      <div className="draw__actions">
-        <button className="btn btn--primary btn--big" onClick={onPlayAgain}>
-          Play again
-        </button>
-        <Link to="/" className="btn btn--ghost">
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
+
+      </div>
+
+      {/* Out of the way in the corner, and locked for a moment, so frantic end-of-round taps
+          don't accidentally start a new game. */}
+      <div
+        className={`game__end-actions ${unlocked ? '' : 'is-locked'}`}
+        style={{ ['--lock-ms' as string]: `${END_LOCK_MS}ms` }}
+      >
+        <Link
+          to="/"
+          className="btn btn--ghost"
+          aria-disabled={!unlocked}
+          tabIndex={unlocked ? undefined : -1}
+          onClick={(e) => !unlocked && e.preventDefault()}
+        >
           Home
         </Link>
+        <button className="btn btn--primary btn--big game__again" disabled={!unlocked} onClick={onPlayAgain}>
+          Play again
+        </button>
       </div>
-    </div>
+    </>
   )
 }

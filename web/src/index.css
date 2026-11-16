@@ -1168,3 +1168,32 @@ a.btn { display: inline-block; text-decoration: none; }
   .langs__heading { font-size: 1.1em; }
   .learn__body { gap: 1rem; padding-top: 1rem; }
 }
+
+/* Game over: Play again / Home tucked into the bottom-right corner, locked briefly */
+.game__end-actions {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.game__end-actions.is-locked { pointer-events: none; }
+.game__end-actions.is-locked .btn--ghost { opacity: 0.4; }
+.game__again { position: relative; overflow: hidden; }
+.game__again:disabled { opacity: 1; cursor: default; background: var(--surface-3); color: var(--muted); }
+/* A bar fills up while the button is locked, so it's clear it's about to be ready */
+.game__end-actions.is-locked .game__again::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 4px;
+  background: var(--accent);
+  transform-origin: left;
+  animation: unlock-fill var(--lock-ms, 1500ms) linear forwards;
+}
+@keyframes unlock-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .game__end-actions.is-locked .game__again::after { animation: none; transform: none; } }
+@media (max-width: 800px) {
+  .game__end-actions { left: 1rem; right: 1rem; justify-content: flex-end; }
+}
