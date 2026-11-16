@@ -3,6 +3,7 @@ import { StatusBadge } from './components/StatusBadge'
 import GamePage from './game/GamePage'
 import AdminPage from './pages/admin/AdminPage'
 import RafflePage from './pages/RafflePage'
+import ScreenPage from './pages/ScreenPage'
 
 function Home() {
   return (
@@ -43,7 +44,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/raffle" element={<RafflePage />} />
         <Route path="/game" element={<GamePage />} />
-        <Route path="/screen" element={<ComingSoon title="📺 Big screen" />} />
+        <Route path="/screen" element={<ScreenPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<ComingSoon title="404 – page not found" />} />
       </Routes>

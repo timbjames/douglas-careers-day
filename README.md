@@ -59,7 +59,7 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 | `/` | Home: enter the raffle or play the game |
 | `/raffle` | Raffle entry: first name + optional initial → 4-digit ticket number |
 | `/game` | Bug Squash: 30-second tap game with a live leaderboard |
-| `/screen` | Big-screen display *(coming soon)* |
+| `/screen` | Big-screen display: QR code, live raffle count, prizes, winners, leaderboard, activity feed and full-screen winner reveals |
 | `/admin` | PIN-protected admin: prizes, animated draw, entries, leaderboard moderation, end-of-day wipe |
 
 ## Bug Squash
@@ -74,6 +74,19 @@ Bugs crawl across a code editor; tap them before the 30 seconds run out.
 | ✦ Feature | −20 (don't squash it!) |
 
 Squashing 5 in a row raises a combo multiplier, up to x4. Missing or hitting a feature resets it. The game gets faster and busier as the round goes on. Players can save their score under a nickname, which is checked against the same blocklist as raffle names. Use the **Scores** tab in admin to remove a score or reset the leaderboard.
+
+## The big screen
+
+Open `/screen` on the laptop that's connected to the TV or projector, and press F11 for full screen. Everything updates live over SignalR (`/hubs/live`):
+
+- **QR code** so visitors can join on their phones. Set `PUBLIC_URL` in `.env` to the address phones can reach, usually your laptop's IP on the event wifi or hotspot, e.g. `http://192.168.1.50`. Otherwise the QR code points at whatever address the screen was opened on, and shows a warning if that's `localhost`.
+- The raffle entry count, the prizes still available, and the winners.
+- The Bug Squash top 10, plus a feed of new entries and scores. A new #1 gets confetti.
+- When you draw a winner in `/admin`, the big screen takes over with a drum roll and reveals the same ticket at the same moment.
+
+**Sound:** browsers only play audio after the page has been clicked, so click the big screen once after opening it. Every page has a 🔊/🔇 toggle.
+
+If the connection drops (wifi blip, API restart), pages show "reconnecting…", retry on their own and catch up when they're back. They also refresh every 30 seconds as a safety net.
 
 ## Running the raffle on the day
 

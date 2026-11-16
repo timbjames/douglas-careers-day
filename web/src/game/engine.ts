@@ -25,6 +25,8 @@ export interface RoundStats {
 export interface EngineCallbacks {
   onHud: (hud: Hud) => void
   onEnd: (stats: RoundStats) => void
+  /** Fired for every squash, e.g. to play a sound. */
+  onSquash?: (kind: CritterKind) => void
 }
 
 interface Critter {
@@ -337,6 +339,7 @@ export class BugSquashEngine {
     }
 
     this.critters = this.critters.filter((c) => c !== hit)
+    this.callbacks.onSquash?.(hit.kind)
 
     if (hit.kind === 'feature') {
       this.combo = 0

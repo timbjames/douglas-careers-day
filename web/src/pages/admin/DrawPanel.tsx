@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ApiError, type AdminApi, type Entry, type Prize, type Winner } from '../../api'
 import { celebrate } from '../../confetti'
+import { sound } from '../../sound'
 
 type Phase = 'idle' | 'spinning' | 'revealed'
 
@@ -55,6 +56,7 @@ export default function DrawPanel({ client, onChange, goToPrizes }: Props) {
   const winners = entries.filter((e) => e.isWinner)
 
   const draw = async (id: number) => {
+    sound.unlock()
     lastDrawPrizeId.current = id
     setError(null)
     setWinner(null)
@@ -65,6 +67,7 @@ export default function DrawPanel({ client, onChange, goToPrizes }: Props) {
       const pool = eligible.length > 0 ? eligible.map((e) => e.ticketNumber) : [result.ticketNumber]
       for (let delay = 40; delay < 450 && mounted.current; delay *= 1.1) {
         setDisplay(pool[Math.floor(Math.random() * pool.length)])
+        sound.play('tick')
         await sleep(delay)
       }
       if (!mounted.current) return
@@ -72,6 +75,7 @@ export default function DrawPanel({ client, onChange, goToPrizes }: Props) {
       setWinner(result)
       setPhase('revealed')
       celebrate()
+      sound.play('fanfare')
       onChange()
       await load()
     } catch (err) {

@@ -33,6 +33,12 @@ export interface Entry {
   prizeName: string | null
 }
 
+export interface PublicPrize {
+  name: string
+  quantity: number
+  remaining: number
+}
+
 export interface Prize {
   id: number
   name: string
@@ -102,6 +108,8 @@ export const api = {
     request<Ticket>('/api/raffle/entries', json('POST', { firstName, lastInitial })),
   raffleStats: () => request<RaffleStats>('/api/raffle/stats'),
   winners: () => request<Winner[]>('/api/raffle/winners'),
+  prizes: () => request<PublicPrize[]>('/api/raffle/prizes'),
+  config: () => request<{ publicUrl: string | null }>('/api/config'),
 
   submitScore: (nickname: string, score: number) =>
     request<SubmittedScore>('/api/game/scores', json('POST', { nickname, score })),

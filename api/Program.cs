@@ -1,6 +1,7 @@
 using System.Threading.RateLimiting;
 using CareersDay.Api.Data;
 using CareersDay.Api.Game;
+using CareersDay.Api.Live;
 using CareersDay.Api.Raffle;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ var connectionString = builder.Configuration.GetConnectionString("Default")
     ?? throw new InvalidOperationException("Connection string 'Default' is not configured.");
 
 builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql(connectionString));
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<LiveNotifier>();
 
 // nginx sits in front of the API, so trust X-Forwarded-For to get each visitor's real IP
 // (used for rate limiting and the admin PIN lockout).
@@ -55,8 +58,12 @@ api.MapGet("/health", async (AppDbContext db, CancellationToken ct) =>
     return dbOk ? Results.Ok(body) : Results.Json(body, statusCode: StatusCodes.Status503ServiceUnavailable);
 });
 
+// Settings the big screen needs, e.g. the address phones should use (shown as a QR code).
+api.MapGet("/config", (IConfiguration config) => new { publicUrl = config["PUBLIC_URL"]?.TrimEnd('/') });
+
 app.MapRaffleEndpoints();
 app.MapGameEndpoints();
+app.MapHub<LiveHub>("/hubs/live");
 
 app.Run();
 
