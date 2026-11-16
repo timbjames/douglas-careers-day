@@ -177,6 +177,7 @@ input:focus { outline: none; border-color: var(--accent); }
   transition: transform 0.1s ease, opacity 0.1s ease;
 }
 
+a.btn { display: inline-block; text-decoration: none; }
 .btn:active:not(:disabled) { transform: scale(0.97); }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn--primary { background: linear-gradient(135deg, var(--accent), #2bb5e8); color: #062018; }
@@ -338,4 +339,142 @@ input:focus { outline: none; border-color: var(--accent); }
 
 @media (prefers-reduced-motion: reduce) {
   .draw__number--win { animation: none; }
+}
+
+/* ---------- Bug Squash ---------- */
+.game {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.game__stage {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.4);
+}
+
+.game__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none; /* taps are for squashing, not scrolling */
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.game__hud {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  pointer-events: none;
+  font-weight: 800;
+}
+
+.hud__score { font-size: 2.4rem; text-shadow: 0 2px 8px rgb(0 0 0 / 0.6); }
+.hud__combo { font-size: 1.4rem; color: var(--warn); animation: pop 0.3s ease; }
+.hud__time {
+  margin-left: auto;
+  font-size: 1.6rem;
+  background: rgb(13 20 48 / 0.8);
+  padding: 0.2rem 0.8rem;
+  border-radius: 0.8rem;
+}
+.hud__time--low { color: var(--bad); }
+
+.game__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(11 16 32 / 0.6);
+  backdrop-filter: blur(3px);
+}
+
+.game__overlay--clear { background: transparent; backdrop-filter: none; pointer-events: none; }
+.game__overlay .back--top { position: absolute; }
+.game__card { text-align: center; align-items: center; }
+.game__card p { margin: 0; }
+
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1.5rem;
+  text-align: left;
+}
+
+.legend li { display: flex; align-items: center; gap: 0.5rem; }
+.legend strong { margin-left: auto; }
+.legend__dot { width: 1rem; height: 1rem; border-radius: 50%; display: inline-block; }
+.legend__dot--bug { background: #ff5c5c; }
+.legend__dot--fast { background: #ffb347; }
+.legend__dot--golden { background: #ffd166; box-shadow: 0 0 10px #ffd166; }
+.legend__star { color: #6be3ff; font-size: 1.2rem; width: 1rem; text-align: center; }
+
+.countdown {
+  font-size: clamp(6rem, 20vw, 12rem);
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: 0 0 40px rgb(54 226 160 / 0.6);
+  animation: pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+.game__final {
+  font-size: clamp(4rem, 14vw, 6rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.game__rank { font-size: 1.3rem; }
+
+/* Leaderboard */
+.leaderboard {
+  width: 18rem;
+  flex-shrink: 0;
+  background: rgb(20 27 51 / 0.85);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  overflow-y: auto;
+}
+
+.leaderboard h2 { margin: 0 0 0.8rem; font-size: 1.3rem; }
+.leaderboard ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+
+.leaderboard li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.6rem;
+  background: rgb(255 255 255 / 0.03);
+}
+
+.leaderboard__you { background: rgb(54 226 160 / 0.18) !important; outline: 2px solid var(--accent); }
+.leaderboard__rank { width: 1.8rem; text-align: center; font-weight: 800; color: var(--muted); }
+.leaderboard__name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.leaderboard__score { font-weight: 800; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 800px) {
+  .game { flex-direction: column; height: auto; min-height: 100dvh; }
+  .game__stage { height: 75dvh; flex: none; }
+  .leaderboard { width: auto; }
+  .legend { grid-template-columns: 1fr; }
 }

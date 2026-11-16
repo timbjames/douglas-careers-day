@@ -41,6 +41,21 @@ export interface Prize {
   awarded: number
 }
 
+export interface LeaderboardEntry {
+  id: number
+  rank: number
+  nickname: string
+  score: number
+  createdAt: string
+}
+
+export interface SubmittedScore {
+  id: number
+  rank: number
+  score: number
+  nickname: string
+}
+
 /** Error carrying the friendly message the API sends back as { error: "..." }. */
 export class ApiError extends Error {
   readonly status: number
@@ -87,6 +102,10 @@ export const api = {
     request<Ticket>('/api/raffle/entries', json('POST', { firstName, lastInitial })),
   raffleStats: () => request<RaffleStats>('/api/raffle/stats'),
   winners: () => request<Winner[]>('/api/raffle/winners'),
+
+  submitScore: (nickname: string, score: number) =>
+    request<SubmittedScore>('/api/game/scores', json('POST', { nickname, score })),
+  leaderboard: (top = 10) => request<LeaderboardEntry[]>(`/api/game/leaderboard?top=${top}`),
 }
 
 /**
@@ -116,6 +135,9 @@ export function adminApi(pin: string, onUnauthorized?: () => void) {
     wipeEntries: () => call<{ deleted: number }>('/api/admin/raffle/entries', json('DELETE')),
     draw: (prizeId: number) => call<Winner>('/api/admin/raffle/draw', json('POST', { prizeId })),
     forfeit: (entryId: number) => call<void>(`/api/admin/raffle/entries/${entryId}/forfeit`, json('POST')),
+    scores: () => call<LeaderboardEntry[]>('/api/admin/game/scores'),
+    deleteScore: (id: number) => call<void>(`/api/admin/game/scores/${id}`, json('DELETE')),
+    wipeScores: () => call<{ deleted: number }>('/api/admin/game/scores', json('DELETE')),
   }
 }
 

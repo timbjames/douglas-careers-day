@@ -1,5 +1,6 @@
 using System.Threading.RateLimiting;
 using CareersDay.Api.Data;
+using CareersDay.Api.Game;
 using CareersDay.Api.Raffle;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(o =>
     o.KnownProxies.Clear();
 });
 
-// Stop one person entering the raffle hundreds of times. Generous enough for a shared kiosk tablet.
+// Stop one person spamming raffle entries or scores. Generous enough for a shared kiosk tablet.
 builder.Services.AddRateLimiter(o =>
 {
     o.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -30,6 +31,11 @@ builder.Services.AddRateLimiter(o =>
         RateLimitPartition.GetFixedWindowLimiter(
             http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             _ => new FixedWindowRateLimiterOptions { PermitLimit = 20, Window = TimeSpan.FromMinutes(1) }));
+    // A round lasts 30 seconds, so even a busy tablet won't submit more than a few scores a minute.
+    o.AddPolicy(GameEndpoints.ScoreRateLimitPolicy, http =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1) }));
 });
 
 var app = builder.Build();
@@ -50,6 +56,7 @@ api.MapGet("/health", async (AppDbContext db, CancellationToken ct) =>
 });
 
 app.MapRaffleEndpoints();
+app.MapGameEndpoints();
 
 app.Run();
 
