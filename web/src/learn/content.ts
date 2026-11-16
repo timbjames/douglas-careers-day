@@ -181,3 +181,169 @@ export const tips: Tip[] = [
   { icon: '🏢', title: 'Get a taste of work', text: 'Ask your school about work experience or a Foundation Apprenticeship in S5/S6.' },
   { icon: '📂', title: 'Keep your work', text: 'Save screenshots and code from your projects. They show employers what you can do.' },
 ]
+
+// ---------------------------------------------------------------------------------------------
+// How software gets made (the SDLC / DevOps loop)
+// ---------------------------------------------------------------------------------------------
+
+export interface Tool {
+  name: string
+  /** True if it was used to build this careers-day app: a nice talking point. */
+  usedHere?: boolean
+}
+
+export interface SdlcStage {
+  name: string
+  icon: string
+  what: string
+  tools: Tool[]
+}
+
+/** In loop order: the first four make up the "build it" side, the last four the "run it" side. */
+export const sdlcStages: SdlcStage[] = [
+  {
+    name: 'Plan',
+    icon: '🗺️',
+    what: 'Decide what to build next: talk to users, sketch designs and split the work into small tasks.',
+    tools: [{ name: 'Jira' }, { name: 'Azure Boards' }, { name: 'Trello' }, { name: 'Figma' }, { name: 'Miro' }],
+  },
+  {
+    name: 'Code',
+    icon: '⌨️',
+    what: 'Write the code, save every change with version control, and review each other’s work.',
+    tools: [
+      { name: 'Visual Studio Code' },
+      { name: 'Visual Studio' },
+      { name: 'JetBrains Rider' },
+      { name: 'Git', usedHere: true },
+      { name: 'GitHub', usedHere: true },
+      { name: 'AI assistants (Claude, Copilot)', usedHere: true },
+    ],
+  },
+  {
+    name: 'Build',
+    icon: '🧱',
+    what: 'Turn the code into something that runs, automatically, every time someone makes a change.',
+    tools: [
+      { name: 'GitHub Actions' },
+      { name: 'Azure Pipelines' },
+      { name: 'dotnet CLI', usedHere: true },
+      { name: 'npm', usedHere: true },
+      { name: 'Vite', usedHere: true },
+      { name: 'Docker', usedHere: true },
+    ],
+  },
+  {
+    name: 'Test',
+    icon: '🧪',
+    what: 'Check it works and is secure: thousands of automatic tests run in minutes.',
+    tools: [
+      { name: 'xUnit / NUnit' },
+      { name: 'Jest / Vitest' },
+      { name: 'Playwright', usedHere: true },
+      { name: 'Postman' },
+      { name: 'SonarQube' },
+    ],
+  },
+  {
+    name: 'Release',
+    icon: '📦',
+    what: 'Approve the change and package it up, ready to go live.',
+    tools: [
+      { name: 'Pull requests', usedHere: true },
+      { name: 'Azure Pipelines' },
+      { name: 'Octopus Deploy' },
+      { name: 'Feature flags' },
+    ],
+  },
+  {
+    name: 'Deploy',
+    icon: '🚀',
+    what: 'Put the new version live on servers or in the cloud, often many times a day.',
+    tools: [
+      { name: 'Docker Compose', usedHere: true },
+      { name: 'Kubernetes' },
+      { name: 'Microsoft Azure' },
+      { name: 'Amazon Web Services' },
+      { name: 'Terraform' },
+    ],
+  },
+  {
+    name: 'Operate',
+    icon: '⚙️',
+    what: 'Keep it running smoothly for real users, and fix problems quickly when they happen.',
+    tools: [{ name: 'Azure App Service' }, { name: 'Kubernetes' }, { name: 'ServiceNow' }, { name: 'Microsoft Teams' }],
+  },
+  {
+    name: 'Monitor',
+    icon: '📈',
+    what: 'Watch how it’s used and how it performs, then feed what you learn into the next plan.',
+    tools: [{ name: 'Application Insights' }, { name: 'Grafana' }, { name: 'Datadog' }, { name: 'Sentry' }],
+  },
+]
+
+// ---------------------------------------------------------------------------------------------
+// Languages and frameworks
+// ---------------------------------------------------------------------------------------------
+
+export interface Language {
+  name: string
+  use: string
+  /** A one-line "Hello!" in that language. */
+  hello: string
+  usedHere?: boolean
+}
+
+export const languages: Language[] = [
+  { name: 'C#', use: 'Business apps, websites, games', hello: 'Console.WriteLine("Hello!");', usedHere: true },
+  { name: 'TypeScript', use: 'Websites and web apps', hello: 'const hi: string = "Hello!";', usedHere: true },
+  { name: 'JavaScript', use: 'Anything in a web browser', hello: 'console.log("Hello!");' },
+  { name: 'Python', use: 'AI, data and automation', hello: 'print("Hello!")' },
+  { name: 'Java', use: 'Big business systems, Android', hello: 'System.out.println("Hello!");' },
+  { name: 'SQL', use: 'Asking databases questions', hello: "SELECT 'Hello!';", usedHere: true },
+  { name: 'Go', use: 'Fast cloud services', hello: 'fmt.Println("Hello!")' },
+  { name: 'Rust', use: 'Super-safe, super-fast code', hello: 'println!("Hello!");' },
+  { name: 'Kotlin', use: 'Android apps', hello: 'println("Hello!")' },
+  { name: 'Swift', use: 'iPhone and Mac apps', hello: 'print("Hello!")' },
+  { name: 'C++', use: 'Games engines, robots', hello: 'std::cout << "Hello!";' },
+  { name: 'PHP', use: 'Lots of the world’s websites', hello: 'echo "Hello!";' },
+]
+
+export interface FrameworkGroup {
+  title: string
+  icon: string
+  items: Tool[]
+}
+
+export const frameworkGroups: FrameworkGroup[] = [
+  {
+    title: 'Websites (front end)',
+    icon: '🖥️',
+    items: [{ name: 'React', usedHere: true }, { name: 'Angular' }, { name: 'Vue' }, { name: 'Svelte' }, { name: 'Next.js' }],
+  },
+  {
+    title: 'Servers & APIs (back end)',
+    icon: '🔌',
+    items: [{ name: 'ASP.NET Core', usedHere: true }, { name: 'Node.js' }, { name: 'Spring Boot' }, { name: 'Django' }, { name: 'FastAPI' }],
+  },
+  {
+    title: 'Mobile apps',
+    icon: '📱',
+    items: [{ name: 'React Native' }, { name: 'Flutter' }, { name: '.NET MAUI' }, { name: 'SwiftUI' }, { name: 'Jetpack Compose' }],
+  },
+  {
+    title: 'Data & AI',
+    icon: '🤖',
+    items: [{ name: 'pandas' }, { name: 'PyTorch' }, { name: 'TensorFlow' }, { name: 'Jupyter' }, { name: 'Power BI' }],
+  },
+  {
+    title: 'Databases',
+    icon: '🗄️',
+    items: [{ name: 'PostgreSQL', usedHere: true }, { name: 'SQL Server' }, { name: 'MySQL' }, { name: 'MongoDB' }, { name: 'Redis' }],
+  },
+  {
+    title: 'Games',
+    icon: '🎮',
+    items: [{ name: 'Unity' }, { name: 'Unreal Engine' }, { name: 'Godot' }],
+  },
+]

@@ -5,7 +5,7 @@ const labels = { 3: 'Really useful', 2: 'Very handy', 1: 'Helps too' } as const
 
 export default function SubjectsPage() {
   return (
-    <LearnLayout index={3} title="Useful school subjects" subtitle="What helps if you want to work in software development">
+    <LearnLayout title="Useful school subjects" subtitle="What helps if you want to work in software development">
       <div className="subjects">
         {subjects.map((s) => (
           <div key={s.name} className={`subject subject--${s.relevance}`}>

@@ -4,10 +4,12 @@ import { CompanyLogo, SchoolCrest } from './components/Brand'
 import { BugIcon, TicketIcon } from './components/Icons'
 import { StatusBadge } from './components/StatusBadge'
 import GamePage from './game/GamePage'
+import LanguagesPage from './learn/LanguagesPage'
 import LearnHub from './learn/LearnHub'
 import MythsPage from './learn/MythsPage'
 import PathwayPage from './learn/PathwayPage'
 import QualificationsPage from './learn/QualificationsPage'
+import SdlcPage from './learn/SdlcPage'
 import SubjectsPage from './learn/SubjectsPage'
 import TipsPage from './learn/TipsPage'
 import AdminPage from './pages/admin/AdminPage'
@@ -74,6 +76,8 @@ export default function App() {
         <Route path="/learn/pathway" element={<PathwayPage />} />
         <Route path="/learn/qualifications" element={<QualificationsPage />} />
         <Route path="/learn/subjects" element={<SubjectsPage />} />
+        <Route path="/learn/sdlc" element={<SdlcPage />} />
+        <Route path="/learn/languages" element={<LanguagesPage />} />
         <Route path="/learn/tips" element={<TipsPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<ComingSoon title="404 – page not found" />} />

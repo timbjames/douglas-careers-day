@@ -3,7 +3,7 @@ import { LearnLayout } from './LearnLayout'
 
 export default function PathwayPage() {
   return (
-    <LearnLayout index={1} title="Routes into tech" subtitle="There’s no single “right” way in: here are the main routes in Scotland">
+    <LearnLayout title="Routes into tech" subtitle="There’s no single “right” way in: here are the main routes in Scotland">
       <div className="pathway">
         <section className="routes" aria-label="Routes into tech">
           <div className="routes__start">After S4–S6</div>

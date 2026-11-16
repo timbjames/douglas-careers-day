@@ -7,7 +7,6 @@ export default function QualificationsPage() {
 
   return (
     <LearnLayout
-      index={2}
       title="Qualifications & training"
       subtitle="Every step on the ladder can lead to a tech job. You don’t have to climb all of them."
     >
