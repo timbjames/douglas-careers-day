@@ -60,7 +60,7 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 | `/raffle` | Raffle entry: first name + optional initial → 4-digit ticket number |
 | `/game` | Bug Squash: 30-second tap game with a live leaderboard |
 | `/screen` | Big-screen display: QR code, live raffle count, prizes, winners, leaderboard, activity feed and full-screen winner reveals |
-| `/learn` | Careers in tech: myths vs truths, routes into tech, qualifications, useful school subjects, top tips |
+| `/learn` | Careers in tech: myths vs truths, routes into tech, qualifications, useful school subjects, how software gets made, languages & frameworks, top tips |
 | `/admin` | PIN-protected admin: prizes, animated draw, entries, leaderboard moderation, end-of-day wipe |
 
 ## Branding
@@ -79,9 +79,11 @@ These are infographic pages to show while you talk. Open `/learn` on the big scr
 - **Routes into tech:** university, Graduate Apprenticeship, Modern Apprenticeship, college and teaching yourself, plus a "My pathway" timeline.
 - **Qualifications & training:** an SCQF ladder from National 5s up to degrees, the Foundation Apprenticeship you can do at school, certifications and soft skills.
 - **Useful school subjects:** each subject rated by how useful it is, with a reason why.
+- **How software gets made:** an animated infinity loop of the development lifecycle (Plan → Code → Build → Test → Release → Deploy → Operate → Monitor). Each press moves to the next stage and shows the tools used at it. Tools used to build this app are highlighted.
+- **Languages & frameworks:** 12 languages, each with a one-line "Hello!", plus frameworks grouped by what they build. Each press spotlights the next group.
 - **Top tips:** 8 numbered tips. Each press spotlights the next tip and dims the others.
 
-All the text is in `web/src/learn/content.ts`.
+All the text is in `web/src/learn/content.ts`. The running order is in `web/src/learn/topics.ts`.
 
 ## Bug Squash
 

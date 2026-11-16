@@ -34,7 +34,6 @@ export default function MythsPage() {
 
   return (
     <LearnLayout
-      index={0}
       title="Myths vs truths"
       subtitle={`Tap a card to bust the myth · ${count}/${myths.length} busted`}
       onNext={revealNext}

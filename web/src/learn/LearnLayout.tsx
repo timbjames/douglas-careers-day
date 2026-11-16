@@ -1,12 +1,10 @@
 import { useEffect, useRef, type ReactNode } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import { CompanyLogo, SchoolCrest } from '../components/Brand'
 import { topics } from './topics'
 
 
 interface Props {
-  /** Index of this page in `topics`. */
-  index: number
   title: string
   subtitle?: string
   children: ReactNode
@@ -19,8 +17,11 @@ interface Props {
 }
 
 /** Shared frame for the info pages: brand bar, title, content, and presenter navigation. */
-export function LearnLayout({ index, title, subtitle, children, onNext, onPrev }: Props) {
+export function LearnLayout({ title, subtitle, children, onNext, onPrev }: Props) {
   const navigate = useNavigate()
+  // This page's place in the running order comes from topics.ts, so reordering is a one-line change.
+  const { pathname } = useLocation()
+  const index = topics.findIndex((t) => t.path === pathname)
   const prev = topics[index - 1]
   const next = topics[index + 1]
 

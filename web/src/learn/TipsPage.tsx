@@ -30,7 +30,6 @@ export default function TipsPage() {
 
   return (
     <LearnLayout
-      index={4}
       title="Top tips"
       subtitle="Things you can start doing now, whatever you want to be"
       onNext={next}
