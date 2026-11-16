@@ -65,13 +65,18 @@ function tone(c: AudioContext, { freq, to, type = 'sine', at = 0, dur = 0.15, vo
   osc.stop(t + dur + 0.05)
 }
 
+// One short burst of white noise, made once and reused for every squash (no allocation per tap).
+let noiseBuffer: AudioBuffer | null = null
+
 function noise(c: AudioContext, { at = 0, dur = 0.08, vol = 0.25, cutoff = 1500 } = {}) {
   const t = c.currentTime + at
-  const buffer = c.createBuffer(1, Math.ceil(c.sampleRate * dur), c.sampleRate)
-  const data = buffer.getChannelData(0)
-  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
+  if (!noiseBuffer) {
+    noiseBuffer = c.createBuffer(1, Math.ceil(c.sampleRate * 0.25), c.sampleRate)
+    const data = noiseBuffer.getChannelData(0)
+    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
+  }
   const src = c.createBufferSource()
-  src.buffer = buffer
+  src.buffer = noiseBuffer
   const filter = c.createBiquadFilter()
   filter.type = 'lowpass'
   filter.frequency.value = cutoff
@@ -79,7 +84,7 @@ function noise(c: AudioContext, { at = 0, dur = 0.08, vol = 0.25, cutoff = 1500 
   gain.gain.setValueAtTime(vol, t)
   gain.gain.exponentialRampToValueAtTime(0.0001, t + dur)
   src.connect(filter).connect(gain).connect(master!)
-  src.start(t)
+  src.start(t, 0, dur)
 }
 
 const sounds: Record<SoundName, (c: AudioContext) => void> = {

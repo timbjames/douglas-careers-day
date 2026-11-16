@@ -481,11 +481,11 @@ a.btn { display: inline-block; text-decoration: none; }
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: rgb(var(--surface-rgb) / 0.6);
-  backdrop-filter: blur(3px);
+  /* A solid tint, not a blur: backdrop-filter made confetti on the game-over screen drop to ~15fps */
+  background: rgb(var(--surface-rgb) / 0.82);
 }
 
-.game__overlay--clear { background: transparent; backdrop-filter: none; pointer-events: none; }
+.game__overlay--clear { background: transparent; pointer-events: none; }
 .game__overlay .back--top { position: absolute; }
 .game__card { text-align: center; align-items: center; }
 .game__card p { margin: 0; }
