@@ -160,3 +160,24 @@ export const subjects: Subject[] = [
 ]
 
 export const subjectsTip = 'No single subject decides your future. Pick what you enjoy and are good at: curiosity counts most.'
+
+// ---------------------------------------------------------------------------------------------
+// Top tips
+// ---------------------------------------------------------------------------------------------
+
+export interface Tip {
+  icon: string
+  title: string
+  text: string
+}
+
+export const tips: Tip[] = [
+  { icon: '🛠️', title: 'Build something', text: 'A game in Scratch, a Python quiz, a website about your hobby: small projects teach you the most.' },
+  { icon: '🤔', title: 'Stay curious', text: 'Wonder how your favourite app works? Look it up. Asking “how?” is how developers think.' },
+  { icon: '🐛', title: 'Mistakes are normal', text: 'Every developer writes bugs every day. Fixing them is the job, and failing a test isn’t the end.' },
+  { icon: '🧩', title: 'Practise problem-solving', text: 'Puzzles, logic games and maths problems all train the same muscles as coding.' },
+  { icon: '🤝', title: 'Work as a team', text: 'Group projects, clubs and sport teach the teamwork every tech job needs.' },
+  { icon: '💬', title: 'Explain things clearly', text: 'The best developers can explain a tricky idea to anyone, not just to computers.' },
+  { icon: '🏢', title: 'Get a taste of work', text: 'Ask your school about work experience or a Foundation Apprenticeship in S5/S6.' },
+  { icon: '📂', title: 'Keep your work', text: 'Save screenshots and code from your projects. They show employers what you can do.' },
+]

@@ -4,4 +4,5 @@ export const topics = [
   { path: '/learn/pathway', title: 'Routes into tech', blurb: 'The pathways people take, and mine', icon: '🧭' },
   { path: '/learn/qualifications', title: 'Qualifications & training', blurb: 'What you might need, step by step', icon: '🎓' },
   { path: '/learn/subjects', title: 'Useful school subjects', blurb: 'Which subjects help, and why', icon: '📚' },
+  { path: '/learn/tips', title: 'Top tips', blurb: 'Things you can start doing now', icon: '⭐' },
 ] as const

@@ -9,6 +9,7 @@ namespace CareersDay.Api.Game;
 
 public record SubmitScoreRequest(string? Nickname, int Score);
 public record SubmitScoreResponse(int Id, int Rank, int Score, string Nickname);
+public record DeleteScoresRequest(int[]? Ids);
 public record LeaderboardEntry(int Id, int Rank, string Nickname, int Score, DateTimeOffset CreatedAt);
 
 public static partial class GameEndpoints
@@ -78,6 +79,17 @@ public static partial class GameEndpoints
             if (deleted == 0) return Error("Score not found.", 404);
             await live.LeaderboardChanged();
             return Results.NoContent();
+        });
+
+        // Delete several scores at once (the tick-boxes on the admin Scores tab).
+        admin.MapPost("/scores/delete", async (DeleteScoresRequest req, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
+        {
+            var ids = (req.Ids ?? []).Distinct().ToArray();
+            if (ids.Length == 0) return Error("Pick at least one score to delete.");
+            if (ids.Length > 500) return Error("That's too many scores at once.");
+            var deleted = await db.GameScores.Where(s => ids.Contains(s.Id)).ExecuteDeleteAsync(ct);
+            if (deleted > 0) await live.LeaderboardChanged();
+            return Results.Ok(new { deleted });
         });
 
         admin.MapDelete("/scores", async (AppDbContext db, LiveNotifier live, CancellationToken ct) =>

@@ -145,6 +145,7 @@ export function adminApi(pin: string, onUnauthorized?: () => void) {
     forfeit: (entryId: number) => call<void>(`/api/admin/raffle/entries/${entryId}/forfeit`, json('POST')),
     scores: () => call<LeaderboardEntry[]>('/api/admin/game/scores'),
     deleteScore: (id: number) => call<void>(`/api/admin/game/scores/${id}`, json('DELETE')),
+    deleteScores: (ids: number[]) => call<{ deleted: number }>('/api/admin/game/scores/delete', json('POST', { ids })),
     wipeScores: () => call<{ deleted: number }>('/api/admin/game/scores', json('DELETE')),
   }
 }

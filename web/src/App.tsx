@@ -9,6 +9,7 @@ import MythsPage from './learn/MythsPage'
 import PathwayPage from './learn/PathwayPage'
 import QualificationsPage from './learn/QualificationsPage'
 import SubjectsPage from './learn/SubjectsPage'
+import TipsPage from './learn/TipsPage'
 import AdminPage from './pages/admin/AdminPage'
 import RafflePage from './pages/RafflePage'
 import ScreenPage from './pages/ScreenPage'
@@ -73,6 +74,7 @@ export default function App() {
         <Route path="/learn/pathway" element={<PathwayPage />} />
         <Route path="/learn/qualifications" element={<QualificationsPage />} />
         <Route path="/learn/subjects" element={<SubjectsPage />} />
+        <Route path="/learn/tips" element={<TipsPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<ComingSoon title="404 – page not found" />} />
       </Routes>
