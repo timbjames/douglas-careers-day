@@ -95,17 +95,17 @@ export interface PathwayStep {
   placeholder?: boolean
 }
 
-/**
- * The presenter's own pathway, shown as a timeline. Replace the placeholder steps with the real
- * story (and delete `placeholder: true`).
- */
+/** The presenter's own pathway, shown as a timeline. */
 export const myPathway: PathwayStep[] = [
-  { when: 'School', title: 'Subjects I took', detail: 'Which subjects, and what I enjoyed', placeholder: true },
-  { when: 'After school', title: 'College / university / job', detail: 'What I did next, and why', placeholder: true },
-  { when: 'First tech job', title: 'Where I started', detail: 'My first role and what I learned', placeholder: true },
-  { when: 'Along the way', title: 'Moving up', detail: 'Roles, skills and moments that shaped my career', placeholder: true },
+  { when: 'High school', title: 'Failed Computing Science', detail: 'Yes, really: the subject I now work in!' },
+  { when: 'Applying to uni', title: 'Didn’t get in for Biology', detail: 'But I got a place to study Computer Science instead' },
+  { when: 'University', title: 'Computer Science → Internet Technology & Software Development', detail: 'My course changed to focus on the web and building software, and I graduated' },
+  { when: 'First job', title: 'Into IT', detail: 'Straight from university into my first job in IT' },
   { when: 'Today', title: 'Interim Head of Development, LRQA', detail: 'Leading LRQA’s software development teams' },
 ]
+
+/** The takeaway shown under the timeline. */
+export const pathwayMessage = 'A setback isn’t the end of the road. It can point you somewhere even better.'
 
 // ---------------------------------------------------------------------------------------------
 // Qualifications and training

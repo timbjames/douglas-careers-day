@@ -1,4 +1,4 @@
-import { myPathway, routes } from './content'
+import { myPathway, pathwayMessage, routes } from './content'
 import { LearnLayout } from './LearnLayout'
 
 export default function PathwayPage() {
@@ -32,6 +32,7 @@ export default function PathwayPage() {
               </li>
             ))}
           </ol>
+          <p className="journey__message">{pathwayMessage}</p>
         </section>
       </div>
     </LearnLayout>

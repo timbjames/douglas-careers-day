@@ -80,7 +80,7 @@ These are infographic pages to show while you talk. Open `/learn` on the big scr
 - **Qualifications & training:** an SCQF ladder from National 5s up to degrees, the Foundation Apprenticeship you can do at school, certifications and soft skills.
 - **Useful school subjects:** each subject rated by how useful it is, with a reason why.
 
-All the text is in `web/src/learn/content.ts`. Steps in **My pathway** marked `placeholder: true` show with a dashed outline until they're filled in.
+All the text is in `web/src/learn/content.ts`.
 
 ## Bug Squash
 
