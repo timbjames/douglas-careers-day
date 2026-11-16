@@ -4,6 +4,7 @@ import { adminApi, api, ApiError, type AdminApi, type RaffleStats } from '../../
 import DrawPanel from './DrawPanel'
 import EntriesPanel from './EntriesPanel'
 import PrizesPanel from './PrizesPanel'
+import ScoresPanel from './ScoresPanel'
 
 const PIN_KEY = 'careersday.adminPin'
 
@@ -106,7 +107,7 @@ function PinGate({ onUnlock }: { onUnlock: (pin: string) => void }) {
   )
 }
 
-type Tab = 'draw' | 'prizes' | 'entries'
+type Tab = 'draw' | 'prizes' | 'entries' | 'scores'
 
 function AdminShell({ client, onLock }: { client: AdminApi; onLock: () => void }) {
   const [tab, setTab] = useState<Tab>('draw')
@@ -147,7 +148,7 @@ function AdminShell({ client, onLock }: { client: AdminApi; onLock: () => void }
       </header>
 
       <nav className="tabs" role="tablist">
-        {(['draw', 'prizes', 'entries'] as const).map((t) => (
+        {(['draw', 'prizes', 'entries', 'scores'] as const).map((t) => (
           <button
             key={t}
             role="tab"
@@ -155,7 +156,7 @@ function AdminShell({ client, onLock }: { client: AdminApi; onLock: () => void }
             className={`tabs__tab ${tab === t ? 'tabs__tab--active' : ''}`}
             onClick={() => setTab(t)}
           >
-            {{ draw: '🎉 Draw', prizes: '🎁 Prizes', entries: '🎟️ Entries' }[t]}
+            {{ draw: '🎉 Draw', prizes: '🎁 Prizes', entries: '🎟️ Entries', scores: '🐛 Scores' }[t]}
           </button>
         ))}
       </nav>
@@ -163,6 +164,7 @@ function AdminShell({ client, onLock }: { client: AdminApi; onLock: () => void }
       {tab === 'draw' && <DrawPanel client={client} onChange={changed} goToPrizes={() => setTab('prizes')} />}
       {tab === 'prizes' && <PrizesPanel client={client} onChange={changed} />}
       {tab === 'entries' && <EntriesPanel client={client} onChange={changed} />}
+      {tab === 'scores' && <ScoresPanel client={client} />}
     </main>
   )
 }

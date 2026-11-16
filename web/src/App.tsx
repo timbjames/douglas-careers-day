@@ -1,5 +1,6 @@
 import { Link, Route, Routes } from 'react-router'
 import { StatusBadge } from './components/StatusBadge'
+import GamePage from './game/GamePage'
 import AdminPage from './pages/admin/AdminPage'
 import RafflePage from './pages/RafflePage'
 
@@ -41,7 +42,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/raffle" element={<RafflePage />} />
-        <Route path="/game" element={<ComingSoon title="🐛 Bug Squash" />} />
+        <Route path="/game" element={<GamePage />} />
         <Route path="/screen" element={<ComingSoon title="📺 Big screen" />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<ComingSoon title="404 – page not found" />} />

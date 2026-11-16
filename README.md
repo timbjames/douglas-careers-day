@@ -58,9 +58,22 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 |---|---|
 | `/` | Home: enter the raffle or play the game |
 | `/raffle` | Raffle entry: first name + optional initial → 4-digit ticket number |
-| `/game` | Bug Squash *(coming soon)* |
+| `/game` | Bug Squash: 30-second tap game with a live leaderboard |
 | `/screen` | Big-screen display *(coming soon)* |
-| `/admin` | PIN-protected admin: prizes, animated draw, entries, end-of-day wipe |
+| `/admin` | PIN-protected admin: prizes, animated draw, entries, leaderboard moderation, end-of-day wipe |
+
+## Bug Squash
+
+Bugs crawl across a code editor; tap them before the 30 seconds run out.
+
+| Critter | Points |
+|---|---|
+| Red bug | +10 |
+| Orange speedy bug | +20 |
+| Golden bug | +50 |
+| ✦ Feature | −20 (don't squash it!) |
+
+Squashing 5 in a row raises a combo multiplier, up to x4. Missing or hitting a feature resets it. The game gets faster and busier as the round goes on. Players can save their score under a nickname, which is checked against the same blocklist as raffle names. Use the **Scores** tab in admin to remove a score or reset the leaderboard.
 
 ## Running the raffle on the day
 
