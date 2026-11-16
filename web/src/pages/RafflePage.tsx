@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { api, ApiError, type Ticket } from '../api'
 import { burst } from '../confetti'
+import { sound } from '../sound'
 
 export default function RafflePage() {
   const [ticket, setTicket] = useState<Ticket | null>(null)
@@ -27,6 +28,7 @@ function EntryForm({ onEntered }: { onEntered: (t: Ticket) => void }) {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
+    sound.unlock()
     setBusy(true)
     setError(null)
     try {
@@ -95,6 +97,7 @@ function TicketCard({ ticket, onDone }: { ticket: Ticket; onDone: () => void }) 
         clearInterval(id)
         setShown(ticket.ticketNumber)
         burst()
+        sound.play('ticket')
         return
       }
       // Lock in one more digit every few frames, left to right.

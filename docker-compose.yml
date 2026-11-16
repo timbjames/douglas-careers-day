@@ -23,6 +23,7 @@ services:
     environment:
       ConnectionStrings__Default: Host=db;Port=5432;Database=careersday;Username=careersday;Password=${POSTGRES_PASSWORD}
       ADMIN_PIN: ${ADMIN_PIN:?Set ADMIN_PIN in .env}
+      PUBLIC_URL: ${PUBLIC_URL:-}
 
   web:
     build: ./web

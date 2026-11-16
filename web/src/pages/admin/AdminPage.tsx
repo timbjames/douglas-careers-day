@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { adminApi, api, ApiError, type AdminApi, type RaffleStats } from '../../api'
+import { SoundToggle } from '../../components/SoundToggle'
+import { useLiveEvent } from '../../live'
 import DrawPanel from './DrawPanel'
 import EntriesPanel from './EntriesPanel'
 import PrizesPanel from './PrizesPanel'
@@ -116,6 +118,12 @@ function AdminShell({ client, onLock }: { client: AdminApi; onLock: () => void }
   const [version, setVersion] = useState(0)
   const changed = useCallback(() => setVersion((v) => v + 1), [])
 
+  // New entries from the tablet/phones and changes from other admin tabs show up instantly.
+  useLiveEvent('EntryAdded', changed)
+  useLiveEvent('RaffleChanged', changed)
+  useLiveEvent('WinnerDrawn', changed)
+  useLiveEvent('Reconnected', changed)
+
   useEffect(() => {
     let cancelled = false
     const load = () =>
@@ -124,7 +132,7 @@ function AdminShell({ client, onLock }: { client: AdminApi; onLock: () => void }
         .then((s) => !cancelled && setStats(s))
         .catch(() => {})
     load()
-    const id = setInterval(load, 5000) // pick up new entries arriving from the tablet
+    const id = setInterval(load, 30_000) // safety net if the live connection drops
     return () => {
       cancelled = true
       clearInterval(id)
@@ -142,6 +150,7 @@ function AdminShell({ client, onLock }: { client: AdminApi; onLock: () => void }
             <Stat label="Prizes left" value={stats.prizesRemaining} />
           </div>
         )}
+        <SoundToggle />
         <button className="btn btn--ghost" onClick={onLock}>
           Lock
         </button>

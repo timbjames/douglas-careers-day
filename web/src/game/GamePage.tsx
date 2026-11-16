@@ -1,11 +1,20 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { api, ApiError, type SubmittedScore } from '../api'
+import { SoundToggle } from '../components/SoundToggle'
 import { burst, celebrate } from '../confetti'
-import { BugSquashEngine, ROUND_MS, type Hud, type RoundStats } from './engine'
+import { sound, type SoundName } from '../sound'
+import { BugSquashEngine, ROUND_MS, type CritterKind, type Hud, type RoundStats } from './engine'
 import { Leaderboard } from './Leaderboard'
 
 type Phase = 'intro' | 'countdown' | 'playing' | 'over'
+
+const squashSounds: Record<CritterKind, SoundName> = {
+  bug: 'squash',
+  fast: 'squashFast',
+  golden: 'golden',
+  feature: 'feature',
+}
 
 export default function GamePage() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -23,7 +32,9 @@ export default function GamePage() {
       onEnd: (s) => {
         setStats(s)
         setPhase('over')
+        sound.play('gameOver')
       },
+      onSquash: (kind) => sound.play(squashSounds[kind]),
     })
     engineRef.current = engine
     return () => engine.destroy()
@@ -32,6 +43,7 @@ export default function GamePage() {
   // 3, 2, 1… then go.
   useEffect(() => {
     if (phase !== 'countdown') return
+    sound.play(countdown === 0 ? 'go' : 'countdown')
     const id = setTimeout(
       () => {
         if (countdown === 0) {
@@ -47,6 +59,7 @@ export default function GamePage() {
   }, [phase, countdown])
 
   const play = () => {
+    sound.unlock()
     setSubmitted(null)
     setStats(null)
     setHud({ score: 0, timeLeftMs: ROUND_MS, combo: 0, multiplier: 1 })
@@ -66,6 +79,7 @@ export default function GamePage() {
             <span className="hud__score">{hud.score}</span>
             {hud.multiplier > 1 && <span className="hud__combo">🔥 x{hud.multiplier}</span>}
             <span className={`hud__time ${secondsLeft <= 5 ? 'hud__time--low' : ''}`}>⏱ {secondsLeft}s</span>
+            <SoundToggle className="hud__sound" />
           </div>
         )}
 

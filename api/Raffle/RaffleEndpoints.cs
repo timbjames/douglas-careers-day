@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using CareersDay.Api.Admin;
 using CareersDay.Api.Data;
+using CareersDay.Api.Live;
 using Microsoft.EntityFrameworkCore;
 
 namespace CareersDay.Api.Raffle;
@@ -11,6 +12,7 @@ public record RaffleStats(int Entries, int Winners, int PrizesRemaining);
 public record WinnerDto(int Id, string TicketNumber, string DisplayName, string? PrizeName, DateTimeOffset? WonAt);
 public record EntryDto(int Id, string TicketNumber, string DisplayName, DateTimeOffset CreatedAt,
     bool IsWinner, bool Forfeited, string? PrizeName);
+public record PublicPrizeDto(string Name, int Quantity, int Remaining);
 public record PrizeDto(int Id, string Name, int Quantity, int SortOrder, int Awarded);
 public record SavePrizeRequest(string? Name, int Quantity);
 public record DrawRequest(int PrizeId);
@@ -27,7 +29,7 @@ public static class RaffleEndpoints
         // ---------- Public ----------
         var raffle = app.MapGroup("/api/raffle");
 
-        raffle.MapPost("/entries", async (EnterRaffleRequest req, AppDbContext db, CancellationToken ct) =>
+        raffle.MapPost("/entries", async (EnterRaffleRequest req, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
             var (displayName, error) = NameRules.Normalise(req.FirstName, req.LastInitial);
             if (error is not null) return Error(error);
@@ -42,6 +44,7 @@ public static class RaffleEndpoints
                 try
                 {
                     await db.SaveChangesAsync(ct);
+                    await live.EntryAdded(displayName!, await db.RaffleEntries.CountAsync(ct));
                     return Results.Created($"/api/raffle/entries/{ticket}", new TicketResponse(ticket, displayName!));
                 }
                 catch (DbUpdateException)
@@ -59,6 +62,14 @@ public static class RaffleEndpoints
             var totalPrizes = await db.Prizes.SumAsync(p => (int?)p.Quantity, ct) ?? 0;
             return new RaffleStats(entries, winners, Math.Max(0, totalPrizes - winners));
         });
+
+        // What's up for grabs, for the big screen.
+        raffle.MapGet("/prizes", async (AppDbContext db, CancellationToken ct) =>
+            await db.Prizes
+                .OrderBy(p => p.SortOrder).ThenBy(p => p.Id)
+                .Select(p => new PublicPrizeDto(p.Name, p.Quantity,
+                    p.Quantity - db.RaffleEntries.Count(e => e.IsWinner && e.PrizeId == p.Id)))
+                .ToListAsync(ct));
 
         raffle.MapGet("/winners", async (AppDbContext db, CancellationToken ct) =>
             await db.RaffleEntries
@@ -79,7 +90,7 @@ public static class RaffleEndpoints
                     db.RaffleEntries.Count(e => e.IsWinner && e.PrizeId == p.Id)))
                 .ToListAsync(ct));
 
-        admin.MapPost("/prizes", async (SavePrizeRequest req, AppDbContext db, CancellationToken ct) =>
+        admin.MapPost("/prizes", async (SavePrizeRequest req, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
             var name = req.Name?.Trim() ?? "";
             if (name.Length is 0 or > 100) return Error("Prize name must be 1–100 characters.");
@@ -89,11 +100,12 @@ public static class RaffleEndpoints
             var prize = new Prize { Name = name, Quantity = req.Quantity, SortOrder = nextOrder };
             db.Prizes.Add(prize);
             await db.SaveChangesAsync(ct);
+            await live.RaffleChanged();
             return Results.Created($"/api/admin/prizes/{prize.Id}",
                 new PrizeDto(prize.Id, prize.Name, prize.Quantity, prize.SortOrder, 0));
         });
 
-        admin.MapPut("/prizes/{id:int}", async (int id, SavePrizeRequest req, AppDbContext db, CancellationToken ct) =>
+        admin.MapPut("/prizes/{id:int}", async (int id, SavePrizeRequest req, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
             var prize = await db.Prizes.FindAsync([id], ct);
             if (prize is null) return Error("Prize not found.", 404);
@@ -107,15 +119,18 @@ public static class RaffleEndpoints
             prize.Name = name;
             prize.Quantity = req.Quantity;
             await db.SaveChangesAsync(ct);
+            await live.RaffleChanged();
             return Results.Ok(new PrizeDto(prize.Id, prize.Name, prize.Quantity, prize.SortOrder, awarded));
         });
 
-        admin.MapDelete("/prizes/{id:int}", async (int id, AppDbContext db, CancellationToken ct) =>
+        admin.MapDelete("/prizes/{id:int}", async (int id, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
             if (await db.RaffleEntries.AnyAsync(e => e.IsWinner && e.PrizeId == id, ct))
                 return Error("This prize has already been won, so it can't be deleted.", 409);
             var deleted = await db.Prizes.Where(p => p.Id == id).ExecuteDeleteAsync(ct);
-            return deleted == 0 ? Error("Prize not found.", 404) : Results.NoContent();
+            if (deleted == 0) return Error("Prize not found.", 404);
+            await live.RaffleChanged();
+            return Results.NoContent();
         });
 
         admin.MapGet("/raffle/entries", async (AppDbContext db, CancellationToken ct) =>
@@ -125,20 +140,23 @@ public static class RaffleEndpoints
                     e.IsWinner, e.Forfeited, e.Prize != null ? e.Prize.Name : null))
                 .ToListAsync(ct));
 
-        admin.MapDelete("/raffle/entries/{id:int}", async (int id, AppDbContext db, CancellationToken ct) =>
+        admin.MapDelete("/raffle/entries/{id:int}", async (int id, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
             var deleted = await db.RaffleEntries.Where(e => e.Id == id).ExecuteDeleteAsync(ct);
-            return deleted == 0 ? Error("Entry not found.", 404) : Results.NoContent();
+            if (deleted == 0) return Error("Entry not found.", 404);
+            await live.RaffleChanged();
+            return Results.NoContent();
         });
 
         // End-of-day wipe: removes every entry (and so every winner). Prizes are kept.
-        admin.MapDelete("/raffle/entries", async (AppDbContext db, CancellationToken ct) =>
+        admin.MapDelete("/raffle/entries", async (AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
             var deleted = await db.RaffleEntries.ExecuteDeleteAsync(ct);
+            await live.RaffleChanged();
             return Results.Ok(new { deleted });
         });
 
-        admin.MapPost("/raffle/draw", async (DrawRequest req, AppDbContext db, CancellationToken ct) =>
+        admin.MapPost("/raffle/draw", async (DrawRequest req, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
             var prize = await db.Prizes.FindAsync([req.PrizeId], ct);
             if (prize is null) return Error("Prize not found.", 404);
@@ -157,12 +175,13 @@ public static class RaffleEndpoints
             winner.WonAt = DateTimeOffset.UtcNow;
             winner.PrizeId = prize.Id;
             await db.SaveChangesAsync(ct);
+            await live.WinnerDrawn(winner.TicketNumber, winner.DisplayName, prize.Name);
 
             return Results.Ok(new WinnerDto(winner.Id, winner.TicketNumber, winner.DisplayName, prize.Name, winner.WonAt));
         });
 
         // Winner isn't around to collect: give the prize back and keep them out of future draws.
-        admin.MapPost("/raffle/entries/{id:int}/forfeit", async (int id, AppDbContext db, CancellationToken ct) =>
+        admin.MapPost("/raffle/entries/{id:int}/forfeit", async (int id, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
             var entry = await db.RaffleEntries.FindAsync([id], ct);
             if (entry is null) return Error("Entry not found.", 404);
@@ -173,6 +192,7 @@ public static class RaffleEndpoints
             entry.PrizeId = null;
             entry.Forfeited = true;
             await db.SaveChangesAsync(ct);
+            await live.RaffleChanged();
             return Results.NoContent();
         });
     }

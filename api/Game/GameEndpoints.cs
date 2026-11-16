@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using CareersDay.Api.Admin;
 using CareersDay.Api.Data;
+using CareersDay.Api.Live;
 using CareersDay.Api.Raffle;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,7 +34,7 @@ public static partial class GameEndpoints
     {
         var game = app.MapGroup("/api/game");
 
-        game.MapPost("/scores", async (SubmitScoreRequest req, AppDbContext db, CancellationToken ct) =>
+        game.MapPost("/scores", async (SubmitScoreRequest req, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
             var nickname = Regex.Replace((req.Nickname ?? "").Trim(), @"\s+", " ");
             if (nickname.Length == 0) return Error("Pick a nickname for the leaderboard.");
@@ -49,6 +50,7 @@ public static partial class GameEndpoints
             // Rank = 1 + scores that beat this one. Ties go to whoever got there first, and this score
             // is the newest, so every other score that's equal or higher ranks above it.
             var better = await db.GameScores.CountAsync(s => s.Id != score.Id && s.Score >= score.Score, ct);
+            await live.ScoreAdded(score.Nickname, score.Score, better + 1);
 
             return Results.Created($"/api/game/scores/{score.Id}",
                 new SubmitScoreResponse(score.Id, better + 1, score.Score, score.Nickname));
@@ -70,13 +72,19 @@ public static partial class GameEndpoints
             return rows.Select((s, i) => new LeaderboardEntry(s.Id, i + 1, s.Nickname, s.Score, s.CreatedAt));
         });
 
-        admin.MapDelete("/scores/{id:int}", async (int id, AppDbContext db, CancellationToken ct) =>
+        admin.MapDelete("/scores/{id:int}", async (int id, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
             var deleted = await db.GameScores.Where(s => s.Id == id).ExecuteDeleteAsync(ct);
-            return deleted == 0 ? Error("Score not found.", 404) : Results.NoContent();
+            if (deleted == 0) return Error("Score not found.", 404);
+            await live.LeaderboardChanged();
+            return Results.NoContent();
         });
 
-        admin.MapDelete("/scores", async (AppDbContext db, CancellationToken ct) =>
-            Results.Ok(new { deleted = await db.GameScores.ExecuteDeleteAsync(ct) }));
+        admin.MapDelete("/scores", async (AppDbContext db, LiveNotifier live, CancellationToken ct) =>
+        {
+            var deleted = await db.GameScores.ExecuteDeleteAsync(ct);
+            await live.LeaderboardChanged();
+            return Results.Ok(new { deleted });
+        });
     }
 }

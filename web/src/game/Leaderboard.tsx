@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { api, type LeaderboardEntry } from '../api'
+import { useLiveEvent } from '../live'
 
 interface Props {
   /** Score id to highlight, e.g. the one the player just submitted. */
@@ -8,30 +9,35 @@ interface Props {
   refreshKey?: number
   top?: number
   title?: string
+  className?: string
 }
 
 const medals = ['🥇', '🥈', '🥉']
 
-export function Leaderboard({ highlightId, refreshKey = 0, top = 10, title = '🏆 Top squashers' }: Props) {
+export function Leaderboard({ highlightId, refreshKey = 0, top = 10, title = '🏆 Top squashers', className = '' }: Props) {
   const [rows, setRows] = useState<LeaderboardEntry[] | null>(null)
 
+  const load = useCallback(() => {
+    api
+      .leaderboard(top)
+      .then(setRows)
+      .catch(() => {})
+  }, [top])
+
+  // Live updates from every device, plus a slow poll as a safety net.
+  useLiveEvent('ScoreAdded', load)
+  useLiveEvent('LeaderboardChanged', load)
+  useLiveEvent('Reconnected', load)
+
   useEffect(() => {
-    let cancelled = false
-    const load = () =>
-      api
-        .leaderboard(top)
-        .then((r) => !cancelled && setRows(r))
-        .catch(() => {})
+    // oxlint-disable-next-line react/set-state-in-effect -- state is only set once the request resolves
     load()
-    const id = setInterval(load, 10_000) // pick up scores from other devices
-    return () => {
-      cancelled = true
-      clearInterval(id)
-    }
-  }, [top, refreshKey])
+    const id = setInterval(load, 30_000)
+    return () => clearInterval(id)
+  }, [load, refreshKey])
 
   return (
-    <aside className="leaderboard">
+    <aside className={`leaderboard ${className}`}>
       <h2>{title}</h2>
       {rows === null ? (
         <p className="muted">Loading…</p>
