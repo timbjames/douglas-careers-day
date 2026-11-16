@@ -4,6 +4,11 @@ import { CompanyLogo, SchoolCrest } from './components/Brand'
 import { BugIcon, TicketIcon } from './components/Icons'
 import { StatusBadge } from './components/StatusBadge'
 import GamePage from './game/GamePage'
+import LearnHub from './learn/LearnHub'
+import MythsPage from './learn/MythsPage'
+import PathwayPage from './learn/PathwayPage'
+import QualificationsPage from './learn/QualificationsPage'
+import SubjectsPage from './learn/SubjectsPage'
 import AdminPage from './pages/admin/AdminPage'
 import RafflePage from './pages/RafflePage'
 import ScreenPage from './pages/ScreenPage'
@@ -28,6 +33,9 @@ function Home() {
             <BugIcon /> Play Bug Squash
           </Link>
         </nav>
+        <Link to="/learn" className="home__learn">
+          💡 What’s it like to work in tech? Myths, routes in and useful subjects →
+        </Link>
       </section>
 
       <footer className="home__footer">
@@ -60,6 +68,11 @@ export default function App() {
         <Route path="/raffle" element={<RafflePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/screen" element={<ScreenPage />} />
+        <Route path="/learn" element={<LearnHub />} />
+        <Route path="/learn/myths" element={<MythsPage />} />
+        <Route path="/learn/pathway" element={<PathwayPage />} />
+        <Route path="/learn/qualifications" element={<QualificationsPage />} />
+        <Route path="/learn/subjects" element={<SubjectsPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<ComingSoon title="404 – page not found" />} />
       </Routes>

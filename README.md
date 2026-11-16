@@ -60,6 +60,7 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 | `/raffle` | Raffle entry: first name + optional initial → 4-digit ticket number |
 | `/game` | Bug Squash: 30-second tap game with a live leaderboard |
 | `/screen` | Big-screen display: QR code, live raffle count, prizes, winners, leaderboard, activity feed and full-screen winner reveals |
+| `/learn` | Careers in tech: myths vs truths, routes into tech, qualifications, useful school subjects |
 | `/admin` | PIN-protected admin: prizes, animated draw, entries, leaderboard moderation, end-of-day wipe |
 
 ## Branding
@@ -69,6 +70,17 @@ The app is co-branded LRQA × Douglas Academy.
 - **Logos:** the LRQA logo and Douglas Academy crest are in `web/public/brand/` (see the README there).
 - **Colours and fonts:** edit the brand tokens at the top of `web/src/index.css`. The LRQA navy (#0F1232) and green (#0FF2B2) are sampled from the logo; the raffle red and game blue come from the school crest.
 - **Wording** (event title, tagline, school motto): edit `web/src/brand.ts`.
+
+## Careers in tech pages (`/learn`)
+
+These are infographic pages to show while you talk. Open `/learn` on the big screen and use the arrow keys, space, or a presentation clicker (Page Up/Down):
+
+- **Myths vs truths:** each press flips the next myth card to show the truth, and ← flips it back. After the last card, the next press moves on to the next topic. Pupils can also tap the cards.
+- **Routes into tech:** university, Graduate Apprenticeship, Modern Apprenticeship, college and teaching yourself, plus a "My pathway" timeline.
+- **Qualifications & training:** an SCQF ladder from National 5s up to degrees, the Foundation Apprenticeship you can do at school, certifications and soft skills.
+- **Useful school subjects:** each subject rated by how useful it is, with a reason why.
+
+All the text is in `web/src/learn/content.ts`.
 
 ## Bug Squash
 
