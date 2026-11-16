@@ -1,6 +1,7 @@
 import { Link, Route, Routes } from 'react-router'
 import { brand } from './brand'
 import { CompanyLogo, SchoolCrest } from './components/Brand'
+import { BugIcon, TicketIcon } from './components/Icons'
 import { StatusBadge } from './components/StatusBadge'
 import GamePage from './game/GamePage'
 import AdminPage from './pages/admin/AdminPage'
@@ -20,11 +21,11 @@ function Home() {
         <h1 className="home__title">{brand.event.title}</h1>
         <p className="home__sub">{brand.event.tagline}. Enter the free raffle, then see how many bugs you can squash!</p>
         <nav className="home__buttons">
-          <Link to="/raffle" className="big-btn big-btn--raffle">
-            🎟️ Enter the raffle
+          <Link to="/raffle" className="big-btn big-btn--primary">
+            <TicketIcon /> Enter the raffle
           </Link>
-          <Link to="/game" className="big-btn big-btn--game">
-            🐛 Play Bug Squash
+          <Link to="/game" className="big-btn big-btn--secondary">
+            <BugIcon /> Play Bug Squash
           </Link>
         </nav>
       </section>

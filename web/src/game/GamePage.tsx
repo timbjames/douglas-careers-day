@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { api, ApiError, type SubmittedScore } from '../api'
 import { CompanyLogo } from '../components/Brand'
+import { BugIcon } from '../components/Icons'
 import { SoundToggle } from '../components/SoundToggle'
 import { burst, celebrate } from '../confetti'
 import { sound, type SoundName } from '../sound'
@@ -93,7 +94,9 @@ export default function GamePage() {
               <div className="card__brand">
                 <CompanyLogo height={28} />
               </div>
-              <h1>🐛 Bug Squash</h1>
+              <h1 className="title-with-icon">
+                <BugIcon /> Bug Squash
+              </h1>
               <p>
                 The code is crawling with bugs! Developers find and fix bugs every day. You've got 30 seconds to squash
                 as many as you can.
