@@ -173,7 +173,7 @@ function JoinQr() {
         const target = publicUrl || window.location.origin
         if (cancelled) return
         setUrl(target)
-        return QRCode.toDataURL(target, { margin: 1, width: 480, color: { dark: '#061a33', light: '#ffffff' } })
+        return QRCode.toDataURL(target, { margin: 1, width: 480, color: { dark: '#0f1232', light: '#ffffff' } })
       })
       .then((data) => !cancelled && data && setQr(data))
       .catch(() => {})

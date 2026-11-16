@@ -172,21 +172,21 @@ export class BugSquashEngine {
     const g = bg.getContext('2d')!
     g.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-    const codeColours = [token('--accent', '#00c2a8'), token('--game', '#2ea8e0'), token('--raffle', '#ffb81c'), '#c3cbe8', token('--muted', '#9fb3cf')]
+    const codeColours = [token('--accent', '#0ff2b2'), token('--game', '#4799b1'), token('--raffle', '#e53e33'), '#c3cbe8', token('--muted', '#a9adcf')]
 
-    g.fillStyle = token('--surface-2', '#08203d')
+    g.fillStyle = token('--surface-2', '#12153a')
     g.fillRect(0, 0, this.width, this.height)
 
     const lineHeight = 22
     const gutter = 44
-    g.fillStyle = token('--surface', '#0b2445')
+    g.fillStyle = token('--surface', '#171b45')
     g.fillRect(0, 0, gutter, this.height)
 
     g.font = '12px ui-monospace, Menlo, monospace'
     g.textBaseline = 'middle'
     let indent = 0
     for (let i = 0, y = lineHeight; y < this.height; i++, y += lineHeight) {
-      g.fillStyle = token('--border-strong', '#23497a')
+      g.fillStyle = token('--border-strong', '#2f3573')
       g.fillText(String(i + 1).padStart(3, ' '), 8, y)
 
       if (Math.random() < 0.12) continue // blank line

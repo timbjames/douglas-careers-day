@@ -1,37 +1,37 @@
 /*
  * Brand tokens: the whole look of the app comes from this block.
  *
- * Palette: an LRQA-style navy theme. These are close approximations, not official values.
- * To match LRQA exactly, replace the hex values below with the ones from the LRQA brand
- * guidelines. The *-rgb versions must match their hex (they're used for transparency).
+ * Navy and green are sampled from the LRQA logo (#0F1232 / #0FF2B2). The raffle colours come
+ * from the Douglas Academy crest. The *-rgb versions must match their hex (they're used for
+ * transparency).
  */
 :root {
-  /* Surfaces */
-  --bg: #061a33;
-  --surface: #0b2445;
-  --surface-rgb: 11 36 69;
-  --surface-2: #08203d; /* inputs, game background */
-  --surface-3: #133563; /* active tabs, highlights */
+  /* Surfaces: LRQA navy */
+  --bg: #0f1232;
+  --surface: #171b45;
+  --surface-rgb: 23 27 69;
+  --surface-2: #12153a; /* inputs, game background */
+  --surface-3: #252a64; /* active tabs, highlights */
   --border: rgb(255 255 255 / 0.1);
-  --border-strong: #23497a;
-  --glow-1: #0f3a6e; /* soft background glows */
-  --glow-2: #0a4a5c;
+  --border-strong: #2f3573;
+  --glow-1: #1e2470; /* soft background glows */
+  --glow-2: #0b3d4a;
 
   /* Text */
   --text: #ffffff;
-  --muted: #9fb3cf;
+  --muted: #a9adcf;
 
-  /* Brand accent: buttons, highlights, ticket numbers */
-  --accent: #00c2a8;
-  --accent-rgb: 0 194 168;
-  --accent-2: #2ea8e0; /* gradient partner */
-  --accent-ink: #032a26; /* text on accent buttons */
+  /* Brand accent: LRQA green */
+  --accent: #0ff2b2;
+  --accent-rgb: 15 242 178;
+  --accent-2: #12c9e0; /* gradient partner */
+  --accent-ink: #0f1232; /* navy text on green buttons */
 
   /* Feature colours */
-  --raffle: #ffb81c;
-  --raffle-rgb: 255 184 28;
-  --raffle-2: #ff8a3d;
-  --game: #2ea8e0;
+  --raffle: #e53e33; /* Douglas Academy red */
+  --raffle-rgb: 229 62 51;
+  --raffle-2: #ff7a4d;
+  --game: #4799b1; /* Douglas Academy blue */
   --warn: #ffb347;
   --gold: #ffd166;
   --bad: #ff5c5c;
@@ -147,7 +147,7 @@ a { color: inherit; }
   box-shadow: 0 16px 40px rgb(0 0 0 / 0.45);
 }
 
-.big-btn--raffle { background: linear-gradient(135deg, var(--raffle), var(--raffle-2)); color: #1a1200; }
+.big-btn--raffle { background: linear-gradient(135deg, var(--raffle), var(--raffle-2)); color: #fff; }
 .big-btn--game { background: linear-gradient(135deg, var(--game), var(--accent)); }
 
 .placeholder h1 { font-size: 3rem; margin: 0; }

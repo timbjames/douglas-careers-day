@@ -66,8 +66,8 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 
 The app is co-branded LRQA × Douglas Academy.
 
-- **Logos:** add the official files to `web/public/brand/` (see the README there). Until then, plain-text names are shown in their place.
-- **Colours and fonts:** edit the brand tokens at the top of `web/src/index.css`. The current navy palette is an approximation of LRQA's; swap in the official hex values from the brand guidelines.
+- **Logos:** the LRQA logo and Douglas Academy crest are in `web/public/brand/` (see the README there).
+- **Colours and fonts:** edit the brand tokens at the top of `web/src/index.css`. The LRQA navy (#0F1232) and green (#0FF2B2) are sampled from the logo; the raffle red and game blue come from the school crest.
 - **Wording** (event title, tagline, school motto): edit `web/src/brand.ts`.
 
 ## Bug Squash

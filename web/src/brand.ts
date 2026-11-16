@@ -8,7 +8,7 @@
 export const brand = {
   company: {
     name: 'LRQA',
-    logo: '/brand/lrqa-logo.svg',
+    logo: '/brand/lrqa-logo.png',
   },
   school: {
     name: 'Douglas Academy',

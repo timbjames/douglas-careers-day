@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti'
 const colours = () => {
   const css = getComputedStyle(document.documentElement)
   const pick = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback
-  return [pick('--accent', '#00c2a8'), pick('--game', '#2ea8e0'), pick('--raffle', '#ffb81c'), '#ffffff']
+  return [pick('--accent', '#0ff2b2'), pick('--game', '#4799b1'), pick('--raffle', '#e53e33'), '#ffffff']
 }
 
 /** A quick burst, e.g. when someone gets their ticket. */
