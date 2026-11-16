@@ -69,7 +69,11 @@ const COLOURS: Record<Exclude<CritterKind, 'feature'>, string> = {
   golden: '#ffd166',
 }
 
-const CODE_COLOURS = ['#6b8bff', '#36e2a0', '#ff6bb5', '#c3cbe8', '#ffb347', '#8f9bc7']
+/** Reads a brand colour from the CSS tokens in index.css, with a fallback. */
+function token(name: string, fallback: string) {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  return v || fallback
+}
 
 export const ROUND_MS = 30_000
 
@@ -168,19 +172,21 @@ export class BugSquashEngine {
     const g = bg.getContext('2d')!
     g.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-    g.fillStyle = '#0d1430'
+    const codeColours = [token('--accent', '#00c2a8'), token('--game', '#2ea8e0'), token('--raffle', '#ffb81c'), '#c3cbe8', token('--muted', '#9fb3cf')]
+
+    g.fillStyle = token('--surface-2', '#08203d')
     g.fillRect(0, 0, this.width, this.height)
 
     const lineHeight = 22
     const gutter = 44
-    g.fillStyle = '#111a3d'
+    g.fillStyle = token('--surface', '#0b2445')
     g.fillRect(0, 0, gutter, this.height)
 
     g.font = '12px ui-monospace, Menlo, monospace'
     g.textBaseline = 'middle'
     let indent = 0
     for (let i = 0, y = lineHeight; y < this.height; i++, y += lineHeight) {
-      g.fillStyle = '#3a4677'
+      g.fillStyle = token('--border-strong', '#23497a')
       g.fillText(String(i + 1).padStart(3, ' '), 8, y)
 
       if (Math.random() < 0.12) continue // blank line
@@ -189,7 +195,7 @@ export class BugSquashEngine {
       const tokens = 1 + Math.floor(Math.random() * 5)
       for (let t = 0; t < tokens && x < this.width - 20; t++) {
         const w = rand(20, 110)
-        g.fillStyle = CODE_COLOURS[Math.floor(Math.random() * CODE_COLOURS.length)]
+        g.fillStyle = codeColours[Math.floor(Math.random() * codeColours.length)]
         g.globalAlpha = 0.28
         g.beginPath()
         g.roundRect(x, y - 4, w, 8, 4)

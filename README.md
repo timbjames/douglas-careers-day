@@ -62,6 +62,14 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 | `/screen` | Big-screen display: QR code, live raffle count, prizes, winners, leaderboard, activity feed and full-screen winner reveals |
 | `/admin` | PIN-protected admin: prizes, animated draw, entries, leaderboard moderation, end-of-day wipe |
 
+## Branding
+
+The app is co-branded LRQA × Douglas Academy.
+
+- **Logos:** add the official files to `web/public/brand/` (see the README there). Until then, plain-text names are shown in their place.
+- **Colours and fonts:** edit the brand tokens at the top of `web/src/index.css`. The current navy palette is an approximation of LRQA's; swap in the official hex values from the brand guidelines.
+- **Wording** (event title, tagline, school motto): edit `web/src/brand.ts`.
+
 ## Bug Squash
 
 Bugs crawl across a code editor; tap them before the 30 seconds run out.

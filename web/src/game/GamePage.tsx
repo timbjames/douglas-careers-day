@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { api, ApiError, type SubmittedScore } from '../api'
+import { CompanyLogo } from '../components/Brand'
 import { SoundToggle } from '../components/SoundToggle'
 import { burst, celebrate } from '../confetti'
 import { sound, type SoundName } from '../sound'
@@ -89,8 +90,14 @@ export default function GamePage() {
               ← Home
             </Link>
             <div className="card game__card">
+              <div className="card__brand">
+                <CompanyLogo height={28} />
+              </div>
               <h1>🐛 Bug Squash</h1>
-              <p>The code is crawling with bugs! You've got 30 seconds to squash as many as you can.</p>
+              <p>
+                The code is crawling with bugs! Developers find and fix bugs every day. You've got 30 seconds to squash
+                as many as you can.
+              </p>
               <ul className="legend">
                 <li>
                   <span className="legend__dot legend__dot--bug" /> Bug <strong>+10</strong>
