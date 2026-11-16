@@ -1,0 +1,111 @@
+:root {
+  --bg: #0b1020;
+  --panel: #141b33;
+  --text: #e8ecff;
+  --muted: #8f9bc7;
+  --accent: #36e2a0;
+  --raffle: #ff6bb5;
+  --game: #6b8bff;
+  --warn: #ffb347;
+  --bad: #ff5c5c;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 10%, #1d2a5c 0, transparent 40%),
+    radial-gradient(circle at 80% 90%, #10394a 0, transparent 40%),
+    var(--bg);
+}
+
+a { color: inherit; }
+
+.accent { color: var(--accent); }
+
+/* Home */
+.home, .placeholder {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.home__kicker {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+  color: var(--accent);
+  margin: 0;
+}
+
+.home__title {
+  font-size: clamp(3rem, 10vw, 7rem);
+  margin: 0.25em 0;
+  letter-spacing: -0.03em;
+}
+
+.home__sub { color: var(--muted); font-size: 1.2rem; margin: 0 0 2.5rem; }
+
+.home__buttons {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.big-btn {
+  display: inline-block;
+  padding: 1.5rem 2.5rem;
+  border-radius: 1.25rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: #fff;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.big-btn:hover, .big-btn:focus-visible {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.45);
+}
+
+.big-btn--raffle { background: linear-gradient(135deg, var(--raffle), #c13cff); }
+.big-btn--game { background: linear-gradient(135deg, var(--game), #36c8e2); }
+
+.placeholder h1 { font-size: 3rem; margin: 0; }
+.placeholder p { color: var(--muted); }
+.back { margin-top: 1rem; color: var(--accent); }
+
+/* Status badge */
+.status {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.status__dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.status--ok .status__dot { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.status--db-down .status__dot { background: var(--warn); }
+.status--api-down .status__dot { background: var(--bad); }
