@@ -60,7 +60,7 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 | `/raffle` | Raffle entry: first name + optional initial → 4-digit ticket number |
 | `/game` | Bug Squash: 30-second tap game with a live leaderboard |
 | `/screen` | Big-screen display: QR code, live raffle count, prizes, winners, leaderboard, activity feed and full-screen winner reveals |
-| `/learn` | Careers in tech: myths vs truths, routes into tech, qualifications, useful school subjects |
+| `/learn` | Careers in tech: myths vs truths, routes into tech, qualifications, useful school subjects, top tips |
 | `/admin` | PIN-protected admin: prizes, animated draw, entries, leaderboard moderation, end-of-day wipe |
 
 ## Branding
@@ -79,6 +79,7 @@ These are infographic pages to show while you talk. Open `/learn` on the big scr
 - **Routes into tech:** university, Graduate Apprenticeship, Modern Apprenticeship, college and teaching yourself, plus a "My pathway" timeline.
 - **Qualifications & training:** an SCQF ladder from National 5s up to degrees, the Foundation Apprenticeship you can do at school, certifications and soft skills.
 - **Useful school subjects:** each subject rated by how useful it is, with a reason why.
+- **Top tips:** 8 numbered tips. Each press spotlights the next tip and dims the others.
 
 All the text is in `web/src/learn/content.ts`.
 
@@ -93,7 +94,7 @@ Bugs crawl across a code editor; tap them before the 30 seconds run out.
 | Golden bug | +50 |
 | ✦ Feature | −20 (don't squash it!) |
 
-Squashing 5 in a row raises a combo multiplier, up to x4. Missing or hitting a feature resets it. The game gets faster and busier as the round goes on. Players can save their score under a nickname, which is checked against the same blocklist as raffle names. Use the **Scores** tab in admin to remove a score or reset the leaderboard.
+Squashing 5 in a row raises a combo multiplier, up to x4. Missing or hitting a feature resets it. The game gets faster and busier as the round goes on. Players can save their score under a nickname, which is checked against the same blocklist as raffle names. Use the **Scores** tab in admin to delete a single score, tick several and delete them together, or reset the leaderboard.
 
 ## The big screen
 
