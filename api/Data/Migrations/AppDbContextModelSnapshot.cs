@@ -88,6 +88,9 @@ namespace CareersDay.Api.Data.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
 
+                    b.Property<bool>("Forfeited")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsWinner")
                         .HasColumnType("boolean");
 

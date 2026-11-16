@@ -1,5 +1,7 @@
 import { Link, Route, Routes } from 'react-router'
 import { StatusBadge } from './components/StatusBadge'
+import AdminPage from './pages/admin/AdminPage'
+import RafflePage from './pages/RafflePage'
 
 function Home() {
   return (
@@ -38,10 +40,10 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/raffle" element={<ComingSoon title="🎟️ Raffle" />} />
+        <Route path="/raffle" element={<RafflePage />} />
         <Route path="/game" element={<ComingSoon title="🐛 Bug Squash" />} />
         <Route path="/screen" element={<ComingSoon title="📺 Big screen" />} />
-        <Route path="/admin" element={<ComingSoon title="🔐 Admin" />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<ComingSoon title="404 – page not found" />} />
       </Routes>
       <StatusBadge />

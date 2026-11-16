@@ -16,6 +16,9 @@ public class RaffleEntry
     public bool IsWinner { get; set; }
     public DateTimeOffset? WonAt { get; set; }
 
+    /// <summary>Drawn but not around to collect: excluded from future draws.</summary>
+    public bool Forfeited { get; set; }
+
     public int? PrizeId { get; set; }
     public Prize? Prize { get; set; }
 }
