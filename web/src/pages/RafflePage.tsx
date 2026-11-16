@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { api, ApiError, type Ticket } from '../api'
+import { CompanyLogo } from '../components/Brand'
+import { TicketIcon } from '../components/Icons'
 import { burst } from '../confetti'
 import { sound } from '../sound'
 
@@ -42,7 +44,12 @@ function EntryForm({ onEntered }: { onEntered: (t: Ticket) => void }) {
 
   return (
     <form className="card raffle__form" onSubmit={submit}>
-      <h1>🎟️ Enter the raffle</h1>
+      <div className="card__brand">
+        <CompanyLogo height={28} />
+      </div>
+      <h1 className="title-with-icon">
+        <TicketIcon /> Enter the raffle
+      </h1>
       <p className="muted">It's free! Winners are drawn at the end of the day.</p>
 
       <label className="field">
@@ -114,6 +121,9 @@ function TicketCard({ ticket, onDone }: { ticket: Ticket; onDone: () => void }) 
 
   return (
     <div className="card ticket">
+      <div className="card__brand">
+        <CompanyLogo height={28} />
+      </div>
       <p className="ticket__label">Your ticket number</p>
       <p className="ticket__number" aria-live="polite">
         {shown}

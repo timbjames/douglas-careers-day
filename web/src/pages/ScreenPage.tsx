@@ -1,6 +1,8 @@
 import QRCode from 'qrcode'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { api, type PublicPrize, type RaffleStats, type Winner } from '../api'
+import { brand } from '../brand'
+import { CoBrand } from '../components/Brand'
 import { SoundToggle } from '../components/SoundToggle'
 import { burst, celebrate } from '../confetti'
 import { Leaderboard } from '../game/Leaderboard'
@@ -74,9 +76,8 @@ export default function ScreenPage() {
   return (
     <main className="screen">
       <header className="screen__header">
-        <h1>
-          Careers <span className="accent">Day</span>
-        </h1>
+        <CoBrand height={56} />
+        <h1>{brand.event.title}</h1>
         <span className={`screen__live screen__live--${live}`}>{live === 'connected' ? '● LIVE' : '○ reconnecting…'}</span>
         {soundHint && <span className="screen__hint">Click anywhere to turn on sound</span>}
         <SoundToggle />
@@ -172,7 +173,7 @@ function JoinQr() {
         const target = publicUrl || window.location.origin
         if (cancelled) return
         setUrl(target)
-        return QRCode.toDataURL(target, { margin: 1, width: 480, color: { dark: '#0b1020', light: '#ffffff' } })
+        return QRCode.toDataURL(target, { margin: 1, width: 480, color: { dark: '#0f1232', light: '#ffffff' } })
       })
       .then((data) => !cancelled && data && setQr(data))
       .catch(() => {})
