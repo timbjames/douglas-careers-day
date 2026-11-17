@@ -2,6 +2,7 @@ import { Link, Route, Routes } from 'react-router'
 import { brand } from './brand'
 import { CompanyLogo, SchoolCrest } from './components/Brand'
 import { BugIcon, TicketIcon } from './components/Icons'
+import { IntroOverlay } from './components/IntroOverlay'
 import { StatusBadge } from './components/StatusBadge'
 import GamePage from './game/GamePage'
 import LanguagesPage from './learn/LanguagesPage'
@@ -21,6 +22,9 @@ function Home() {
     <main className="home">
       <header className="topbar">
         <CompanyLogo height={44} />
+        <Link to="/intro" className="btn btn--ghost btn--small topbar__intro">
+          👋 About this career
+        </Link>
         <SchoolCrest height={52} />
       </header>
 
@@ -68,6 +72,15 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route
+          path="/intro"
+          element={
+            <>
+              <Home />
+              <IntroOverlay />
+            </>
+          }
+        />
         <Route path="/raffle" element={<RafflePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/screen" element={<ScreenPage />} />

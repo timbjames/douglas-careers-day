@@ -57,6 +57,7 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 | Route | Purpose |
 |---|---|
 | `/` | Home: enter the raffle or play the game |
+| `/intro` | Title card: LRQA and Douglas Academy logos large, with "Head of Development · Software / Computer Science". Any click or key closes it to the home page. Also opened from the home page's "About this career" button. |
 | `/raffle` | Raffle entry: first name + optional initial → 4-digit ticket number |
 | `/game` | Bug Squash: 30-second tap game with a live leaderboard |
 | `/screen` | Big-screen display: QR code, live raffle count, prizes, winners, leaderboard, activity feed and full-screen winner reveals |
@@ -69,7 +70,7 @@ The app is co-branded LRQA × Douglas Academy.
 
 - **Logos:** the LRQA logo and Douglas Academy crest are in `web/public/brand/` (see the README there).
 - **Colours and fonts:** edit the brand tokens at the top of `web/src/index.css`. The LRQA navy (#0F1232) and green (#0FF2B2) are sampled from the logo; the raffle red and game blue come from the school crest.
-- **Wording** (event title, tagline, school motto): edit `web/src/brand.ts`.
+- **Wording** (event title, tagline, school motto, and the role and field on the intro screen): edit `web/src/brand.ts`.
 
 ## Careers in tech pages (`/learn`)
 
