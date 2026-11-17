@@ -22,6 +22,7 @@ export default function RafflePage() {
 function EntryForm({ onEntered }: { onEntered: (t: Ticket) => void }) {
   const [firstName, setFirstName] = useState('')
   const [initial, setInitial] = useState('')
+  const [className, setClassName] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const firstRef = useRef<HTMLInputElement>(null)
@@ -34,7 +35,7 @@ function EntryForm({ onEntered }: { onEntered: (t: Ticket) => void }) {
     setBusy(true)
     setError(null)
     try {
-      onEntered(await api.enterRaffle(firstName, initial))
+      onEntered(await api.enterRaffle(firstName, initial, className))
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Something went wrong, please try again.')
     } finally {
@@ -65,17 +66,32 @@ function EntryForm({ onEntered }: { onEntered: (t: Ticket) => void }) {
         />
       </label>
 
-      <label className="field field--small">
-        <span>
-          Surname initial <em>(optional)</em>
-        </span>
-        <input
-          value={initial}
-          onChange={(e) => setInitial(e.target.value.replace(/[^\p{L}]/gu, '').slice(0, 1).toUpperCase())}
-          maxLength={1}
-          autoComplete="off"
-        />
-      </label>
+      <div className="field-row">
+        <label className="field field--small">
+          <span>
+            Surname initial <em>(optional)</em>
+          </span>
+          <input
+            value={initial}
+            onChange={(e) => setInitial(e.target.value.replace(/[^\p{L}]/gu, '').slice(0, 1).toUpperCase())}
+            maxLength={1}
+            autoComplete="off"
+          />
+        </label>
+
+        <label className="field field--small field--class">
+          <span>Class</span>
+          <input
+            value={className}
+            onChange={(e) => setClassName(e.target.value.replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase())}
+            maxLength={4}
+            placeholder="e.g. 1A"
+            autoComplete="off"
+            autoCapitalize="characters"
+            required
+          />
+        </label>
+      </div>
 
       {error && (
         <p className="error" role="alert">
@@ -83,11 +99,11 @@ function EntryForm({ onEntered }: { onEntered: (t: Ticket) => void }) {
         </p>
       )}
 
-      <button className="btn btn--primary btn--big" disabled={busy || firstName.trim() === ''}>
+      <button className="btn btn--primary btn--big" disabled={busy || firstName.trim() === '' || className.trim() === ''}>
         {busy ? 'Getting your ticket…' : 'Get my ticket'}
       </button>
 
-      <p className="fine-print">We only keep your first name and initial. No surnames, emails or phone numbers.</p>
+      <p className="fine-print">We only keep your first name, initial and class. No surnames, emails or phone numbers.</p>
     </form>
   )
 }

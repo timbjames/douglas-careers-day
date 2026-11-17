@@ -1254,3 +1254,8 @@ a.btn { display: inline-block; text-decoration: none; }
   padding: 0.2em 1.2em;
   clip-path: polygon(0.5em 0, 100% 0, calc(100% - 0.5em) 100%, 0 100%);
 }
+
+/* Raffle form: surname initial and class side by side */
+.field-row { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.field--class input { width: 7rem; text-transform: uppercase; }
+.field--class input::placeholder { text-transform: none; color: var(--muted); opacity: 0.6; }

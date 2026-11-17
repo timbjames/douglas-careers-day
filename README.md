@@ -135,12 +135,12 @@ If the connection drops (wifi blip, API restart), pages show "reconnecting…", 
 
 1. Open `/admin` on your laptop and unlock it with `ADMIN_PIN`.
 2. **Prizes** tab: add each prize and how many you have.
-3. Visitors enter at `/raffle` on a tablet or their phones. They get a ticket number and photograph it.
+3. Visitors enter at `/raffle` on a tablet or their phones, giving their first name, an optional surname initial, and their class (e.g. `1A`). They get a ticket number and photograph it. The class tells apart pupils with the same name, e.g. "Sam T (1A)" and "Sam T (2C)".
 4. At the end of the day, open the **Draw** tab, pick a prize and press **Draw a winner**.
    - If the winner has gone home, press **Not here? Redraw**. Their ticket is marked as forfeited and can't be drawn again.
 5. When everything has been handed out, go to **Entries**, type `WIPE` and wipe all entries.
 
 Safeguards:
-- Only a first name and an optional surname initial are stored, and names are checked against a small blocklist.
+- Only a first name, an optional surname initial and a class are stored, and names are checked against a small blocklist. A class is 1–4 letters or numbers with at least one digit, e.g. `1A`, `S3B` or `4C2`.
 - Each IP address can make at most 20 entries a minute.
 - After 5 wrong admin PINs, that IP address is locked out for a minute.

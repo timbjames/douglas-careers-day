@@ -17,8 +17,15 @@ export function isClean(text: string) {
   return !lower.split(/[^\p{L}]+/u).some((w) => w && BLOCKED_WORDS.has(w))
 }
 
-/** Returns a tidy display name ("Sam T") or an error message for the pupil. */
-export function normaliseName(firstName: string, lastInitial: string): { displayName?: string; error?: string } {
+/**
+ * Returns a tidy display name, e.g. "Sam T (1A)", or an error message for the pupil.
+ * The class tells apart pupils who share a name.
+ */
+export function normaliseName(
+  firstName: string,
+  lastInitial: string,
+  className: string,
+): { displayName?: string; error?: string } {
   const first = firstName.trim().replace(/\s+/g, ' ')
   if (!first) return { error: 'Please enter your first name.' }
   if (first.length > MAX_FIRST_NAME) return { error: `First name must be ${MAX_FIRST_NAME} letters or fewer.` }
@@ -29,11 +36,17 @@ export function normaliseName(firstName: string, lastInitial: string): { display
   if (initial.length > 1 || (initial.length === 1 && !/\p{L}/u.test(initial)))
     return { error: 'Surname initial should be a single letter.' }
 
+  // School class, e.g. "1A", "S3B" or "4C2": 1–4 letters/numbers with at least one digit.
+  const cls = className.replace(/\s+/g, '').toUpperCase()
+  if (!cls) return { error: 'Please enter your class, e.g. 1A.' }
+  if (!/^(?=.*[0-9])[A-Za-z0-9]{1,4}$/.test(cls) || !isClean(cls)) return { error: 'Class should look like 1A or S3B.' }
+
   if (!isClean(first)) return { error: "Let's keep it friendly! Please use your real first name." }
 
   // Capitalise the first letter of each part: "mary-jane" -> "Mary-Jane".
   const pretty = first.toLowerCase().replace(/(^|[ \-'])(\p{L})/gu, (_, sep: string, ch: string) => sep + ch.toUpperCase())
-  return { displayName: initial ? `${pretty} ${initial.toUpperCase()}` : pretty }
+  const name = initial ? `${pretty} ${initial.toUpperCase()}` : pretty
+  return { displayName: `${name} (${cls})` }
 }
 
 export function nicknameError(raw: string): { nickname?: string; error?: string } {

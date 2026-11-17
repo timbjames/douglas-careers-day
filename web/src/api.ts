@@ -48,8 +48,8 @@ const onlineApi = {
     return body as Health
   },
 
-  enterRaffle: (firstName: string, lastInitial: string) =>
-    request<Ticket>('/api/raffle/entries', json('POST', { firstName, lastInitial })),
+  enterRaffle: (firstName: string, lastInitial: string, className: string) =>
+    request<Ticket>('/api/raffle/entries', json('POST', { firstName, lastInitial, className })),
   raffleStats: () => request<RaffleStats>('/api/raffle/stats'),
   winners: () => request<Winner[]>('/api/raffle/winners'),
   prizes: () => request<PublicPrize[]>('/api/raffle/prizes'),

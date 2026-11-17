@@ -112,8 +112,8 @@ export const offlineApi = {
     return { status: 'ok', database: true, time: now() }
   },
 
-  async enterRaffle(firstName: string, lastInitial: string): Promise<Ticket> {
-    const { displayName, error } = normaliseName(firstName, lastInitial)
+  async enterRaffle(firstName: string, lastInitial: string, className: string): Promise<Ticket> {
+    const { displayName, error } = normaliseName(firstName, lastInitial, className)
     if (error) fail(error)
     const ticket = update((db) => {
       const taken = new Set(db.entries.map((e) => e.ticketNumber))
