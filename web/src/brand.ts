@@ -17,6 +17,11 @@ export const brand = {
     motto: 'Neart Tre Eolas',
     mottoEnglish: 'Strength Through Knowledge',
   },
+  /** Shown on the intro screen (/intro) to give pupils context on the career. */
+  presenter: {
+    role: 'Head of Development',
+    field: 'Software / Computer Science',
+  },
   event: {
     title: 'Careers Festival',
     tagline: 'Discover a career in technology with LRQA',
