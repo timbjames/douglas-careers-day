@@ -23,6 +23,25 @@ To reset everything, including all raffle entries and scores:
 docker compose down -v
 ```
 
+## Offline edition (no Docker, no server)
+
+A backup in case Docker won't run on the day: the whole app as **one HTML file** that you double-click to open. It has no server and needs no internet.
+
+```bash
+cd web
+npm install
+npm run build:offline
+# → web/dist-offline/careers-day-offline.html
+```
+
+Copy that file to any laptop and open it in Chrome or Edge. Everything works: home, intro, raffle, admin draw, Bug Squash, the big screen and the Learn pages.
+
+- **Where the data lives:** raffle entries, prizes, winners and scores are saved in that browser on that laptop, so they survive a refresh or restart. Use the admin wipe buttons at the end of the day.
+- **Live updates between tabs:** open `#/screen` in a second tab or window on the TV and it updates live as people enter, play and win.
+- **No phones:** phones can't reach a file on your laptop, so the big screen says "Enter at the stand" instead of showing a QR code. Visitors use the laptop or a tablet at the stand.
+- **Admin PIN:** set by `VITE_OFFLINE_ADMIN_PIN` in `web/.env.offline` (default `1234`). Change it before building if pupils might get hold of the laptop.
+- **Links:** pages use `#/` links, for example `careers-day-offline.html#/screen` or `#/admin`.
+
 ## Local development
 
 Start a throwaway Postgres that matches `api/appsettings.Development.json`:
@@ -68,7 +87,7 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 
 The app is co-branded LRQA × Douglas Academy.
 
-- **Logos:** the LRQA logo and Douglas Academy crest are in `web/public/brand/` (see the README there).
+- **Logos:** the LRQA logo and Douglas Academy crest are in `web/src/assets/brand/` (see the README there).
 - **Colours and fonts:** edit the brand tokens at the top of `web/src/index.css`. The LRQA navy (#0F1232) and green (#0FF2B2) are sampled from the logo; the raffle red and game blue come from the school crest.
 - **Wording** (event title, tagline, school motto, and the role and field on the intro screen): edit `web/src/brand.ts`.
 

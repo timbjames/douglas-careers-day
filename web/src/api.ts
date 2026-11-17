@@ -1,75 +1,19 @@
-export interface Health {
-  status: 'ok' | 'degraded'
-  database: boolean
-  time: string
-}
+import { OFFLINE } from './env'
+import { offlineAdminApi, offlineApi } from './offline/store'
+import {
+  ApiError,
+  type Entry,
+  type Health,
+  type LeaderboardEntry,
+  type Prize,
+  type PublicPrize,
+  type RaffleStats,
+  type SubmittedScore,
+  type Ticket,
+  type Winner,
+} from './apiTypes'
 
-export interface Ticket {
-  ticketNumber: string
-  displayName: string
-}
-
-export interface RaffleStats {
-  entries: number
-  winners: number
-  prizesRemaining: number
-}
-
-export interface Winner {
-  id: number
-  ticketNumber: string
-  displayName: string
-  prizeName: string | null
-  wonAt: string | null
-}
-
-export interface Entry {
-  id: number
-  ticketNumber: string
-  displayName: string
-  createdAt: string
-  isWinner: boolean
-  forfeited: boolean
-  prizeName: string | null
-}
-
-export interface PublicPrize {
-  name: string
-  quantity: number
-  remaining: number
-}
-
-export interface Prize {
-  id: number
-  name: string
-  quantity: number
-  sortOrder: number
-  awarded: number
-}
-
-export interface LeaderboardEntry {
-  id: number
-  rank: number
-  nickname: string
-  score: number
-  createdAt: string
-}
-
-export interface SubmittedScore {
-  id: number
-  rank: number
-  score: number
-  nickname: string
-}
-
-/** Error carrying the friendly message the API sends back as { error: "..." }. */
-export class ApiError extends Error {
-  readonly status: number
-  constructor(message: string, status: number) {
-    super(message)
-    this.status = status
-  }
-}
+export * from './apiTypes'
 
 async function request<T>(url: string, init: RequestInit = {}): Promise<T> {
   let res: Response
@@ -95,7 +39,7 @@ const json = (method: string, data?: unknown): RequestInit => ({
   body: data === undefined ? undefined : JSON.stringify(data),
 })
 
-export const api = {
+const onlineApi = {
   async health(): Promise<Health> {
     // /api/health returns 503 with a JSON body when the DB is down, so read the body either way.
     const res = await fetch('/api/health')
@@ -120,7 +64,7 @@ export const api = {
  * Admin calls send the PIN in a header; the server checks it on every request.
  * `onUnauthorized` fires if the server rejects the PIN, so the page can lock itself again.
  */
-export function adminApi(pin: string, onUnauthorized?: () => void) {
+function onlineAdminApi(pin: string, onUnauthorized?: () => void) {
   const headers = { 'X-Admin-Pin': pin }
   const call = async <T>(url: string, init: RequestInit = {}) => {
     try {
@@ -150,4 +94,12 @@ export function adminApi(pin: string, onUnauthorized?: () => void) {
   }
 }
 
-export type AdminApi = ReturnType<typeof adminApi>
+export type Api = typeof onlineApi
+export type AdminApi = ReturnType<typeof onlineAdminApi>
+
+/**
+ * The rest of the app only ever uses `api` and `adminApi`. In the offline edition they're swapped
+ * for a version that keeps everything in this browser (see offline/store.ts).
+ */
+export const api: Api = OFFLINE ? offlineApi : onlineApi
+export const adminApi: (pin: string, onUnauthorized?: () => void) => AdminApi = OFFLINE ? offlineAdminApi : onlineAdminApi

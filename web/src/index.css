@@ -1242,3 +1242,15 @@ a.btn { display: inline-block; text-decoration: none; }
   .intro__x { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .intro, .intro__logos { animation: none; } }
+
+/* Offline edition: big-screen panel in place of the phone QR code */
+.screen__join-here { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6em; }
+.screen__join-here p { margin: 0; color: var(--muted); font-size: 1.1em; max-width: 16em; }
+.screen__join-here .screen__join-free {
+  color: var(--accent-ink);
+  background: var(--accent);
+  font-weight: 900;
+  font-size: 1.4em;
+  padding: 0.2em 1.2em;
+  clip-path: polygon(0.5em 0, 100% 0, calc(100% - 0.5em) 100%, 0 100%);
+}

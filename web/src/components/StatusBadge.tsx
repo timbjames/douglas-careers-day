@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
+import { OFFLINE } from '../env'
 
 type State = 'checking' | 'ok' | 'db-down' | 'api-down'
 
 const labels: Record<State, string> = {
   checking: 'Checking…',
-  ok: 'API + database online',
+  ok: OFFLINE ? 'Offline edition · saved in this browser' : 'API + database online',
   'db-down': 'API online, database offline',
   'api-down': 'API offline',
 }

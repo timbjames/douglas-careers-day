@@ -2,18 +2,21 @@
  * Names, wording and logo files for the event. Colours and fonts live in the brand tokens
  * at the top of index.css.
  *
- * Logos: put the official files in web/public/brand/ with these names (see the README there).
- * Until they're added, a plain-text version of each name is shown in its place.
+ * Logos live in src/assets/brand/ (see the README there). They're imported so the build can bundle
+ * them, including into the single-file offline edition. If one is missing, its name shows as text.
  */
+import crest from './assets/brand/douglas-academy-crest.png'
+import lrqaLogo from './assets/brand/lrqa-logo.png'
+
 export const brand = {
   company: {
     name: 'LRQA',
-    logo: '/brand/lrqa-logo.png',
+    logo: lrqaLogo,
   },
   school: {
     name: 'Douglas Academy',
     place: 'Milngavie',
-    crest: '/brand/douglas-academy-crest.png',
+    crest,
     motto: 'Neart Tre Eolas',
     mottoEnglish: 'Strength Through Knowledge',
   },
