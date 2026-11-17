@@ -1,5 +1,6 @@
 import { HubConnectionBuilder, HubConnectionState, LogLevel, type HubConnection } from '@microsoft/signalr'
 import { useEffect, useRef, useSyncExternalStore } from 'react'
+import { OFFLINE } from './env'
 
 /** Payloads broadcast by the API (api/Live/LiveHub.cs). */
 export interface LiveEvents {
@@ -14,6 +15,46 @@ export interface LiveEvents {
 
 type EventName = keyof LiveEvents
 type Status = 'connecting' | 'connected' | 'reconnecting'
+
+// ---------------------------------------------------------------------------------------------
+// Offline edition: no server, so events are delivered to this tab directly and to other tabs
+// (e.g. the big screen) through localStorage "storage" events, which also work for a file opened
+// straight from disk.
+// ---------------------------------------------------------------------------------------------
+
+const OFFLINE_EVENT_KEY = 'careersday.offline.event'
+const offlineListeners = new Map<string, Set<(payload: unknown) => void>>()
+let offlineStorageHooked = false
+
+function dispatchOffline(event: string, payload: unknown) {
+  offlineListeners.get(event)?.forEach((l) => l(payload))
+}
+
+function hookOfflineStorage() {
+  if (offlineStorageHooked) return
+  offlineStorageHooked = true
+  window.addEventListener('storage', (e) => {
+    if (e.key !== OFFLINE_EVENT_KEY || !e.newValue) return
+    try {
+      const { event, payload } = JSON.parse(e.newValue) as { event: string; payload: unknown }
+      dispatchOffline(event, payload)
+    } catch {
+      /* ignore malformed events */
+    }
+  })
+}
+
+/** Offline edition only: broadcast an event, as the API would over SignalR. */
+export function emitLive<E extends EventName>(event: E, ...payload: LiveEvents[E] extends void ? [] : [LiveEvents[E]]) {
+  const data = payload[0]
+  dispatchOffline(event, data)
+  try {
+    // A unique id makes every write a change, so other tabs always get the event.
+    localStorage.setItem(OFFLINE_EVENT_KEY, JSON.stringify({ event, payload: data, id: crypto.randomUUID() }))
+  } catch {
+    /* other tabs just miss this one; they also refresh every 30s */
+  }
+}
 
 let connection: HubConnection | null = null
 let status: Status = 'connecting'
@@ -77,6 +118,16 @@ export function useLiveEvent<E extends EventName>(event: E, handler: (payload: L
   })
 
   useEffect(() => {
+    if (OFFLINE) {
+      hookOfflineStorage()
+      const h = (payload: unknown) => (ref.current as (p: unknown) => void)(payload)
+      const set = offlineListeners.get(event) ?? new Set()
+      offlineListeners.set(event, set)
+      set.add(h)
+      return () => {
+        set.delete(h)
+      }
+    }
     if (event === 'Reconnected') {
       const l = () => (ref.current as () => void)()
       reconnectListeners.add(l)
@@ -96,10 +147,11 @@ export function useLiveEvent<E extends EventName>(event: E, handler: (payload: L
 export function useLiveStatus(): Status {
   return useSyncExternalStore(
     (l) => {
+      if (OFFLINE) return () => {} // always "connected": everything is in this browser
       getConnection()
       statusListeners.add(l)
       return () => statusListeners.delete(l)
     },
-    () => status,
+    () => (OFFLINE ? 'connected' : status),
   )
 }

@@ -2,6 +2,7 @@ import QRCode from 'qrcode'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { api, type PublicPrize, type RaffleStats, type Winner } from '../api'
 import { brand } from '../brand'
+import { OFFLINE } from '../env'
 import { CoBrand } from '../components/Brand'
 import { SoundToggle } from '../components/SoundToggle'
 import { burst, celebrate } from '../confetti'
@@ -84,7 +85,7 @@ export default function ScreenPage() {
       </header>
 
       <section className="screen__col screen__join">
-        <JoinQr />
+        {OFFLINE ? <JoinHere /> : <JoinQr />}
         <div className="screen__count">
           <span key={stats?.entries} className="screen__count-value">
             {stats?.entries ?? '–'}
@@ -160,6 +161,17 @@ interface FeedItem {
 }
 
 /** QR code for phones. Uses PUBLIC_URL from the server, falling back to this page's address. */
+/** Offline edition: phones can't reach a file on this laptop, so point people to the stand instead. */
+function JoinHere() {
+  return (
+    <div className="screen__qr screen__join-here">
+      <h2>🎟️ Enter at the stand</h2>
+      <p>Come and enter the raffle and play Bug Squash right here.</p>
+      <p className="screen__join-free">It's free!</p>
+    </div>
+  )
+}
+
 function JoinQr() {
   const [url, setUrl] = useState<string | null>(null)
   const [qr, setQr] = useState<string | null>(null)

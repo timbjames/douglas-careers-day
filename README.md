@@ -23,6 +23,25 @@ To reset everything, including all raffle entries and scores:
 docker compose down -v
 ```
 
+## Offline edition (no Docker, no server)
+
+A backup in case Docker won't run on the day: the whole app as **one HTML file** that you double-click to open. It has no server and needs no internet.
+
+```bash
+cd web
+npm install
+npm run build:offline
+# → web/dist-offline/careers-day-offline.html
+```
+
+Copy that file to any laptop and open it in Chrome or Edge. Everything works: home, intro, raffle, admin draw, Bug Squash, the big screen and the Learn pages.
+
+- **Where the data lives:** raffle entries, prizes, winners and scores are saved in that browser on that laptop, so they survive a refresh or restart. Use the admin wipe buttons at the end of the day.
+- **Live updates between tabs:** open `#/screen` in a second tab or window on the TV and it updates live as people enter, play and win.
+- **No phones:** phones can't reach a file on your laptop, so the big screen says "Enter at the stand" instead of showing a QR code. Visitors use the laptop or a tablet at the stand.
+- **Admin PIN:** set by `VITE_OFFLINE_ADMIN_PIN` in `web/.env.offline` (default `1234`). Change it before building if pupils might get hold of the laptop.
+- **Links:** pages use `#/` links, for example `careers-day-offline.html#/screen` or `#/admin`.
+
 ## Local development
 
 Start a throwaway Postgres that matches `api/appsettings.Development.json`:
@@ -68,7 +87,7 @@ dotnet ef migrations add <Name> --project api -o Data/Migrations
 
 The app is co-branded LRQA × Douglas Academy.
 
-- **Logos:** the LRQA logo and Douglas Academy crest are in `web/public/brand/` (see the README there).
+- **Logos:** the LRQA logo and Douglas Academy crest are in `web/src/assets/brand/` (see the README there).
 - **Colours and fonts:** edit the brand tokens at the top of `web/src/index.css`. The LRQA navy (#0F1232) and green (#0FF2B2) are sampled from the logo; the raffle red and game blue come from the school crest.
 - **Wording** (event title, tagline, school motto, and the role and field on the intro screen): edit `web/src/brand.ts`.
 
@@ -116,12 +135,12 @@ If the connection drops (wifi blip, API restart), pages show "reconnecting…", 
 
 1. Open `/admin` on your laptop and unlock it with `ADMIN_PIN`.
 2. **Prizes** tab: add each prize and how many you have.
-3. Visitors enter at `/raffle` on a tablet or their phones. They get a ticket number and photograph it.
+3. Visitors enter at `/raffle` on a tablet or their phones, giving their first name, an optional surname initial, and their class (e.g. `1A`). They get a ticket number and photograph it. The class tells apart pupils with the same name, e.g. "Sam T (1A)" and "Sam T (2C)".
 4. At the end of the day, open the **Draw** tab, pick a prize and press **Draw a winner**.
    - If the winner has gone home, press **Not here? Redraw**. Their ticket is marked as forfeited and can't be drawn again.
 5. When everything has been handed out, go to **Entries**, type `WIPE` and wipe all entries.
 
 Safeguards:
-- Only a first name and an optional surname initial are stored, and names are checked against a small blocklist.
+- Only a first name, an optional surname initial and a class are stored, and names are checked against a small blocklist. A class is 1–4 letters or numbers with at least one digit, e.g. `1A`, `S3B` or `4C2`.
 - Each IP address can make at most 20 entries a minute.
 - After 5 wrong admin PINs, that IP address is locked out for a minute.

@@ -37,8 +37,15 @@ public static partial class NameRules
         return !words.Any(BlockedWords.Contains);
     }
 
-    /// <summary>Returns a tidy display name ("Sam T") or an error message for the pupil.</summary>
-    public static (string? DisplayName, string? Error) Normalise(string? firstName, string? lastInitial)
+    // School class, e.g. "1A", "S3B" or "4C2": 1–4 letters/numbers with at least one digit.
+    [GeneratedRegex(@"^(?=.*[0-9])[A-Za-z0-9]{1,4}$")]
+    private static partial Regex ClassPattern();
+
+    /// <summary>
+    /// Returns a tidy display name, e.g. "Sam T (1A)", or an error message for the pupil.
+    /// The class tells apart pupils who share a name.
+    /// </summary>
+    public static (string? DisplayName, string? Error) Normalise(string? firstName, string? lastInitial, string? className)
     {
         var first = (firstName ?? "").Trim();
         first = Regex.Replace(first, @"\s+", " ");
@@ -54,6 +61,12 @@ public static partial class NameRules
         if (initial.Length > 1 || (initial.Length == 1 && !char.IsLetter(initial[0])))
             return (null, "Surname initial should be a single letter.");
 
+        var cls = Regex.Replace(className ?? "", @"\s+", "").ToUpperInvariant();
+        if (cls.Length == 0)
+            return (null, "Please enter your class, e.g. 1A.");
+        if (!ClassPattern().IsMatch(cls) || !IsClean(cls))
+            return (null, "Class should look like 1A or S3B.");
+
         if (!IsClean(first))
             return (null, "Let's keep it friendly! Please use your real first name.");
 
@@ -61,6 +74,7 @@ public static partial class NameRules
         var pretty = Regex.Replace(first.ToLowerInvariant(), @"(^|[ \-'])(\p{L})",
             m => m.Groups[1].Value + m.Groups[2].Value.ToUpperInvariant());
 
-        return (initial.Length == 1 ? $"{pretty} {char.ToUpperInvariant(initial[0])}" : pretty, null);
+        var name = initial.Length == 1 ? $"{pretty} {char.ToUpperInvariant(initial[0])}" : pretty;
+        return ($"{name} ({cls})", null);
     }
 }

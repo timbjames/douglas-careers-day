@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CareersDay.Api.Raffle;
 
-public record EnterRaffleRequest(string? FirstName, string? LastInitial);
+public record EnterRaffleRequest(string? FirstName, string? LastInitial, string? ClassName);
 public record TicketResponse(string TicketNumber, string DisplayName);
 public record RaffleStats(int Entries, int Winners, int PrizesRemaining);
 public record WinnerDto(int Id, string TicketNumber, string DisplayName, string? PrizeName, DateTimeOffset? WonAt);
@@ -31,7 +31,7 @@ public static class RaffleEndpoints
 
         raffle.MapPost("/entries", async (EnterRaffleRequest req, AppDbContext db, LiveNotifier live, CancellationToken ct) =>
         {
-            var (displayName, error) = NameRules.Normalise(req.FirstName, req.LastInitial);
+            var (displayName, error) = NameRules.Normalise(req.FirstName, req.LastInitial, req.ClassName);
             if (error is not null) return Error(error);
 
             // 4-digit tickets give 9,000 numbers: plenty for one day. Retry on the rare clash.
